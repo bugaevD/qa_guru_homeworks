@@ -14,6 +14,9 @@ class TestSuite:
     def get_driver(self):
         return self.__driver
 
+    def tear_down(self):
+        self.__driver.close()
+
     def test_valid_data(self):
         try:
             self.get_driver().get(self.get_url())
@@ -133,3 +136,4 @@ text_box.test_valid_data()
 text_box.test_empty_fields()
 text_box.test_invalid_email()
 text_box.test_long_email()
+text_box.tear_down()
