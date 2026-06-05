@@ -1,0 +1,156 @@
+import os
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+
+
+class PracticeForm:
+
+    def __init__(self):
+        self.driver = webdriver.Chrome()
+        self.wait = WebDriverWait(self.driver, 5)
+        self.url = "https://qa-guru.github.io/one-page-form/automation-practice-form.html"
+
+    PRACTICE_FROM_TITLE = (By.XPATH, "//main//h1")
+    FIRST_NAME_FIELD = (By.ID, "firstName")
+    LAST_NAME_FIELD = (By.ID, "lastName")
+    EMAIL_FIELD = (By.ID, "userEmail")
+    USER_NUMBER_FIELD = (By.ID, "userNumber")
+    CALENDAR_INPUT = (By.ID, "dateOfBirthInput")
+    YEAR_OF_BIRTH_SELECT = (By.CSS_SELECTOR, ".react-datepicker__year-select")
+    MONTH_OF_BIRTH_SELECT = (By.CSS_SELECTOR, ".react-datepicker__month-select")
+    DAY_OF_BIRTH_SELECT = (By.CSS_SELECTOR, ".react-datepicker__day--025:not(.react-datepicker__day--outside-month)")
+    SUBJECT_FIELD = (By.ID, "subjectsInput")
+    SPORTS_HOBBY_CHECK_BOX = (By.XPATH, "//input[@value='Sports']")
+    READING_HOBBY_CHECK_BOX = (By.XPATH, "//input[@value='Reading']")
+    UPLOAD_PICTURE_BUTTON = (By.ID, "uploadPicture")
+    CURRENT_ADDRESS_FIELD = (By.ID, "currentAddress")
+    STATE_INPUT = (By.ID, "state")
+    STATE_SELECT = (By.XPATH, "//div[@id='stateCity-wrapper']/div[contains(text(), 'NCR')]")
+    CITY_INPUT = (By.ID, "city")
+    CITY_SELECT = (By.XPATH, "//div[@id='stateCity-wrapper']/div[contains(text(), 'Noida')]")
+    SUBMIT_BUTTON = (By.ID, "submit")
+    BANNER_BUTTON = (By.XPATH, "//div[@id='fixedban']//button[@aria-label='Close']")
+    RESULT_FORM = (By.ID, "resultModal")
+
+    def set_up(self):
+        self.driver.maximize_window()
+        self.driver.get(self.url)
+
+    def close_commercial_banner(self):
+        banner_button = self.wait.until(EC.element_to_be_clickable(self.BANNER_BUTTON))
+        banner_button.click()
+
+    def select_gender(self, gender):
+        gender_radio_button = self.driver.find_element(By.XPATH, f"//div[@id='genterWrapper']//input[@value='{gender}']")
+        gender_radio_button.click()
+
+    def select_birth_day(self, year, month):
+        self.driver.find_element(*self.CALENDAR_INPUT).click()
+        Select(self.driver.find_element(*self.YEAR_OF_BIRTH_SELECT)).select_by_value(year)
+        Select(self.driver.find_element(*self.MONTH_OF_BIRTH_SELECT)).select_by_value(month)
+        self.driver.find_element(*self.DAY_OF_BIRTH_SELECT).click()
+
+    def upload_file(self):
+        with open("test_file.jpg", "w") as file:
+            file.write("Test File")
+        file_path = os.path.abspath("test_file.jpg")
+
+        self.driver.find_element(*self.UPLOAD_PICTURE_BUTTON).send_keys(file_path)
+
+    def fill_subject(self, *subjects):
+        subjects_input = self.driver.find_element(*self.SUBJECT_FIELD)
+        for subject in subjects:
+            subjects_input.send_keys(subject)
+            subjects_input.send_keys(Keys.ENTER)
+
+    def select_state(self):
+        self.driver.find_element(*self.STATE_INPUT).click()
+        state_dropdown = self.wait.until(EC.element_to_be_clickable(self.STATE_SELECT))
+        state_dropdown.click()
+
+    def select_city(self):
+        self.driver.find_element(*self.CITY_INPUT).click()
+        city_dropdown = self.wait.until(EC.element_to_be_clickable(self.CITY_SELECT))
+        city_dropdown.click()
+
+    def final_result_assertion(self):
+        result_form = self.wait.until(EC.visibility_of_element_located(self.RESULT_FORM))
+        assert result_form.is_displayed(), "Таблица с данным не отобразилась"
+
+        result_text = result_form.text
+        expected_data = {
+            "Student Name": "Dmitry Bugaev",
+            "Student Email": "bugaev@example.com",
+            "Gender": "Male",
+            "Mobile": "1234567890",
+            "Date of Birth": "1988",
+            "Subjects": "Maths",
+            "Hobbies": "Sports, Reading",
+            "Picture": "test_file.jpg",
+            "Address": "г. Санкт-Петербург, ул. Невский проспект, д 101",
+            "State and City": "NCR Noida"
+        }
+
+        for key, value in expected_data.items():
+            assert key in result_text and value in result_text, f"Значения {value} из строки {key} не совпадают!"
+
+    def test_fill_entire_form(self):
+
+        practice_form_title = self.driver.find_element(*self.PRACTICE_FROM_TITLE)
+        assert practice_form_title.text == "Practice Form", "Заголовок страницы не совпадает"
+
+        self.close_commercial_banner()
+
+        firstname_field = self.driver.find_element(*self.FIRST_NAME_FIELD)
+        firstname_field.send_keys("Dmitry")
+
+        lastname_field = self.driver.find_element(*self.LAST_NAME_FIELD)
+        lastname_field.send_keys("Bugaev")
+
+        email_field = self.driver.find_element(*self.EMAIL_FIELD)
+        email_field.send_keys("bugaev@example.com")
+
+        self.select_gender("Male")
+
+        user_number_field = self.driver.find_element(*self.USER_NUMBER_FIELD)
+        user_number_field.send_keys("1234567890")
+
+        self.select_birth_day("1988", "4")
+
+        self.fill_subject("Maths", "English")
+
+        sport_bobby_check_box = self.driver.find_element(*self.SPORTS_HOBBY_CHECK_BOX)
+        sport_bobby_check_box.click()
+
+        reading_hobby_check_box = self.driver.find_element(*self.READING_HOBBY_CHECK_BOX)
+        reading_hobby_check_box.click()
+
+        self.upload_file()
+
+        current_address_field = self.driver.find_element(*self.CURRENT_ADDRESS_FIELD)
+        current_address_field.send_keys("г. Санкт-Петербург, ул. Невский проспект, д 101")
+
+        self.select_state()
+
+        self.select_city()
+
+        submit_button = self.driver.find_element(*self.SUBMIT_BUTTON)
+        self.driver.execute_script("arguments[0].scrollIntoView();", submit_button)
+        self.driver.find_element(*self.SUBMIT_BUTTON).click()
+
+        self.final_result_assertion()
+
+    def tear_down(self):
+        if os.path.exists("test_file.jpg"):
+            os.remove("test_file.jpg")
+        self.driver.quit()
+
+practice_form = PracticeForm()
+
+practice_form.set_up()
+practice_form.test_fill_entire_form()
+practice_form.tear_down()
