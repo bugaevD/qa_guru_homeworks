@@ -139,7 +139,8 @@ class PracticeForm:
         self.select_city()
 
         submit_button = self.driver.find_element(*self.SUBMIT_BUTTON)
-        submit_button.click()
+        self.driver.execute_script("arguments[0].scrollIntoView();", submit_button)
+        self.driver.find_element(*self.SUBMIT_BUTTON).click()
 
         self.final_result_assertion()
 

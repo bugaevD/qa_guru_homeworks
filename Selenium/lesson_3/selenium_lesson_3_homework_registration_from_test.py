@@ -97,6 +97,8 @@ class PracticeForm:
         self.wait.until(EC.element_to_be_clickable(self.CITY_SELECT)).click()
 
     def submit_form(self):
+        submit_button = self.driver.find_element(*self.SUBMIT_BUTTON)
+        self.driver.execute_script("arguments[0].scrollIntoView();", submit_button)
         self.driver.find_element(*self.SUBMIT_BUTTON).click()
 
     def final_result(self):
