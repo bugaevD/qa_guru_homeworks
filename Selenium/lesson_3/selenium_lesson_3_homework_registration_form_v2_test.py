@@ -22,14 +22,11 @@ class PracticeForm:
     CALENDAR_INPUT = (By.ID, "dateOfBirthInput")
     YEAR_OF_BIRTH_SELECT = (By.CSS_SELECTOR, ".react-datepicker__year-select")
     MONTH_OF_BIRTH_SELECT = (By.CSS_SELECTOR, ".react-datepicker__month-select")
-    DAY_OF_BIRTH_SELECT = (By.CSS_SELECTOR, ".react-datepicker__day--025:not(.react-datepicker__day--outside-month)")
     SUBJECT_FIELD = (By.ID, "subjectsInput")
     UPLOAD_PICTURE_BUTTON = (By.ID, "uploadPicture")
     CURRENT_ADDRESS_FIELD = (By.ID, "currentAddress")
     STATE_INPUT = (By.ID, "state")
-    STATE_SELECT = (By.XPATH, "//div[@id='stateCity-wrapper']/div[contains(text(), 'NCR')]")
     CITY_INPUT = (By.ID, "city")
-    CITY_SELECT = (By.XPATH, "//div[@id='stateCity-wrapper']/div[contains(text(), 'Noida')]")
     SUBMIT_BUTTON = (By.ID, "submit")
     BANNER_BUTTON = (By.XPATH, "//div[@id='fixedban']//button[@aria-label='Close']")
     RESULT_FORM = (By.ID, "resultModal")
@@ -94,14 +91,14 @@ class PracticeForm:
         current_address_field = self.driver.find_element(*self.CURRENT_ADDRESS_FIELD)
         current_address_field.send_keys(current_address)
 
-    def select_state(self):
+    def select_state(self, state):
         self.driver.find_element(*self.STATE_INPUT).click()
-        state_dropdown = self.wait.until(ec.element_to_be_clickable(self.STATE_SELECT))
+        state_dropdown = self.wait.until(ec.element_to_be_clickable((By.XPATH, f"//div[@class='state-city-option'][text()='{state}']")))
         state_dropdown.click()
 
-    def select_city(self):
+    def select_city(self, city):
         self.driver.find_element(*self.CITY_INPUT).click()
-        city_dropdown = self.wait.until(ec.element_to_be_clickable(self.CITY_SELECT))
+        city_dropdown = self.wait.until(ec.element_to_be_clickable((By.XPATH, f"//div[@class='state-city-option'][text()='{city}']")))
         city_dropdown.click()
 
     def click_submit_button(self):
@@ -131,7 +128,6 @@ class PracticeForm:
             assert key in result_text and value in result_text, f"Значения {value} из строки {key} не совпадают!"
 
     def test_fill_entire_form(self):
-
         practice_form_title = self.driver.find_element(*self.PRACTICE_FORM_TITLE)
         assert practice_form_title.text == "Practice Form", "Заголовок страницы не совпадает"
 
@@ -146,8 +142,8 @@ class PracticeForm:
         self.select_hobbies("Sports", "Music")
         self.upload_file(self.test_file)
         self.fill_current_address("г. Санкт-Петербург, ул. Невский проспект, д 101")
-        self.select_state()
-        self.select_city()
+        self.select_state("NCR")
+        self.select_city("Noida")
         self.click_submit_button()
         self.final_result_assertion()
 
