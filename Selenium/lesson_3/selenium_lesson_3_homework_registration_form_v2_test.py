@@ -37,7 +37,7 @@ class PracticeForm:
     RESULT_FORM = (By.ID, "resultModal")
 
     def setup(self):
-        self.driver.set_window_size(1920, 1080)
+        self.driver.set_window_size(1280, 720)
         self.driver.get(self.url)
 
     def close_commercial_banner(self):
@@ -54,11 +54,11 @@ class PracticeForm:
 
     def fill_email(self, email):
         email_field = self.driver.find_element(*self.EMAIL_FIELD)
-        email_field.send_keys("bugaev@example.com")
+        email_field.send_keys(email)
 
     def fill_user_number(self, user_number):
         user_number_field = self.driver.find_element(*self.USER_NUMBER_FIELD)
-        user_number_field.send_keys("1234567890")
+        user_number_field.send_keys(user_number)
 
     def select_gender(self, gender):
         gender_radio_button = self.driver.find_element(By.XPATH, f"//div[@id='genterWrapper']//input[@value='{gender}']")
@@ -79,13 +79,13 @@ class PracticeForm:
 
     def fill_subject(self, *subjects):
         subjects_input = self.driver.find_element(*self.SUBJECT_FIELD)
+        self.driver.execute_script("arguments[0].scrollIntoView();", subjects_input)
         for subject in subjects:
             subjects_input.send_keys(subject)
             subjects_input.send_keys(Keys.ENTER)
 
     def fill_current_address(self, current_address):
         current_address_field = self.driver.find_element(*self.CURRENT_ADDRESS_FIELD)
-        self.driver.execute_script("arguments[0].scrollIntoView();", current_address_field)
         current_address_field.send_keys(current_address)
 
     def select_state(self):
@@ -97,6 +97,11 @@ class PracticeForm:
         self.driver.find_element(*self.CITY_INPUT).click()
         city_dropdown = self.wait.until(EC.element_to_be_clickable(self.CITY_SELECT))
         city_dropdown.click()
+
+    def click_submit_button(self):
+        submit_button = self.driver.find_element(*self.SUBMIT_BUTTON)
+        self.driver.execute_script("arguments[0].scrollIntoView();", submit_button)
+        self.driver.find_element(*self.SUBMIT_BUTTON).click()
 
     def final_result_assertion(self):
         result_form = self.wait.until(EC.visibility_of_element_located(self.RESULT_FORM))
@@ -154,9 +159,7 @@ class PracticeForm:
 
         self.select_city()
 
-        submit_button = self.driver.find_element(*self.SUBMIT_BUTTON)
-        self.driver.execute_script("arguments[0].scrollIntoView();", submit_button)
-        self.driver.find_element(*self.SUBMIT_BUTTON).click()
+        self.click_submit_button()
 
         self.final_result_assertion()
 
@@ -164,7 +167,6 @@ class PracticeForm:
         if os.path.exists("test_file.jpg"):
             os.remove("test_file.jpg")
         self.driver.quit()
-
 
 
 practice_form = PracticeForm()
