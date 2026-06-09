@@ -84,6 +84,11 @@ class PracticeForm:
             subjects_input.send_keys(subject)
             subjects_input.send_keys(Keys.ENTER)
 
+    def select_hobbies(self, *hobbies):
+        for hobby in hobbies:
+            hobby_check_box = self.driver.find_element(By.XPATH, f"//div[@id='hobbiesWrapper']//input[@value='{hobby}']")
+            hobby_check_box.click()
+
     def fill_current_address(self, current_address):
         current_address_field = self.driver.find_element(*self.CURRENT_ADDRESS_FIELD)
         current_address_field.send_keys(current_address)
@@ -115,7 +120,7 @@ class PracticeForm:
             "Mobile": "1234567890",
             "Date of Birth": "1988",
             "Subjects": "Maths",
-            "Hobbies": "Sports, Reading",
+            "Hobbies": "Sports, Music",
             "Picture": "test_file.jpg",
             "Address": "г. Санкт-Петербург, ул. Невский проспект, д 101",
             "State and City": "NCR Noida"
@@ -145,11 +150,7 @@ class PracticeForm:
 
         self.fill_subject("Maths", "English")
 
-        sport_bobby_check_box = self.driver.find_element(*self.SPORTS_HOBBY_CHECK_BOX)
-        sport_bobby_check_box.click()
-
-        reading_hobby_check_box = self.driver.find_element(*self.READING_HOBBY_CHECK_BOX)
-        reading_hobby_check_box.click()
+        self.select_hobbies("Sports", "Music")
 
         self.upload_file()
 
