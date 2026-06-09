@@ -37,7 +37,7 @@ class PracticeForm:
     RESULT_FORM = (By.ID, "resultModal")
 
     def setup(self):
-        self.driver.maximize_window()
+        self.driver.set_window_size(1920, 1080)
         self.driver.get(self.url)
 
     def close_commercial_banner(self):
@@ -82,6 +82,10 @@ class PracticeForm:
         for subject in subjects:
             subjects_input.send_keys(subject)
             subjects_input.send_keys(Keys.ENTER)
+
+    def fill_current_address(self, current_address):
+        current_address_field = self.driver.find_element(*self.CURRENT_ADDRESS_FIELD)
+        current_address_field.send_keys(current_address)
 
     def select_state(self):
         self.driver.find_element(*self.STATE_INPUT).click()
@@ -143,8 +147,7 @@ class PracticeForm:
 
         self.upload_file()
 
-        current_address_field = self.driver.find_element(*self.CURRENT_ADDRESS_FIELD)
-        current_address_field.send_keys("г. Санкт-Петербург, ул. Невский проспект, д 101")
+        self.fill_current_address("г. Санкт-Петербург, ул. Невский проспект, д 101")
 
         self.select_state()
 
@@ -160,6 +163,8 @@ class PracticeForm:
         if os.path.exists("test_file.jpg"):
             os.remove("test_file.jpg")
         self.driver.quit()
+
+
 
 practice_form = PracticeForm()
 
