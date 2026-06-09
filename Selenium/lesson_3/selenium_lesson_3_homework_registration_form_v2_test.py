@@ -24,8 +24,6 @@ class PracticeForm:
     MONTH_OF_BIRTH_SELECT = (By.CSS_SELECTOR, ".react-datepicker__month-select")
     DAY_OF_BIRTH_SELECT = (By.CSS_SELECTOR, ".react-datepicker__day--025:not(.react-datepicker__day--outside-month)")
     SUBJECT_FIELD = (By.ID, "subjectsInput")
-    SPORTS_HOBBY_CHECK_BOX = (By.XPATH, "//input[@value='Sports']")
-    READING_HOBBY_CHECK_BOX = (By.XPATH, "//input[@value='Reading']")
     UPLOAD_PICTURE_BUTTON = (By.ID, "uploadPicture")
     CURRENT_ADDRESS_FIELD = (By.ID, "currentAddress")
     STATE_INPUT = (By.ID, "state")
@@ -109,7 +107,7 @@ class PracticeForm:
     def click_submit_button(self):
         submit_button = self.driver.find_element(*self.SUBMIT_BUTTON)
         self.driver.execute_script("arguments[0].scrollIntoView();", submit_button)
-        self.driver.find_element(*self.SUBMIT_BUTTON).click()
+        submit_button.click()
 
     def final_result_assertion(self):
         result_form = self.wait.until(ec.visibility_of_element_located(self.RESULT_FORM))
@@ -138,33 +136,19 @@ class PracticeForm:
         assert practice_form_title.text == "Practice Form", "Заголовок страницы не совпадает"
 
         self.close_commercial_banner()
-
         self.fill_first_name("Dmitry")
-
         self.fill_last_name("Bugaev")
-
         self.fill_email("bugaev@example.com")
-
         self.select_gender("Male")
-
         self.fill_user_number("1234567890")
-
         self.select_birth_day("1988", "4", "22")
-
         self.fill_subject("Maths", "English")
-
         self.select_hobbies("Sports", "Music")
-
         self.upload_file(self.test_file)
-
         self.fill_current_address("г. Санкт-Петербург, ул. Невский проспект, д 101")
-
         self.select_state()
-
         self.select_city()
-
         self.click_submit_button()
-
         self.final_result_assertion()
 
     def tear_down(self):
