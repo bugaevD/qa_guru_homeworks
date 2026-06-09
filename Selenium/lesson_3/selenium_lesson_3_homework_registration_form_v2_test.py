@@ -14,7 +14,7 @@ class PracticeForm:
         self.wait = WebDriverWait(self.driver, 5)
         self.url = "https://qa-guru.github.io/one-page-form/automation-practice-form.html"
 
-    PRACTICE_FROM_TITLE = (By.XPATH, "//main//h1")
+    PRACTICE_FORM_TITLE = (By.XPATH, "//main//h1")
     FIRST_NAME_FIELD = (By.ID, "firstName")
     LAST_NAME_FIELD = (By.ID, "lastName")
     EMAIL_FIELD = (By.ID, "userEmail")
@@ -36,23 +36,39 @@ class PracticeForm:
     BANNER_BUTTON = (By.XPATH, "//div[@id='fixedban']//button[@aria-label='Close']")
     RESULT_FORM = (By.ID, "resultModal")
 
-    def set_up(self):
-        self.driver.maximize_window()
+    def setup(self):
+        self.driver.set_window_size(1920, 1080)
         self.driver.get(self.url)
 
     def close_commercial_banner(self):
         banner_button = self.wait.until(EC.element_to_be_clickable(self.BANNER_BUTTON))
         banner_button.click()
 
+    def fill_first_name(self, first_name):
+        firstname_field = self.driver.find_element(*self.FIRST_NAME_FIELD)
+        firstname_field.send_keys(first_name)
+
+    def fill_last_name(self, last_name):
+        lastname_field = self.driver.find_element(*self.LAST_NAME_FIELD)
+        lastname_field.send_keys(last_name)
+
+    def fill_email(self, email):
+        email_field = self.driver.find_element(*self.EMAIL_FIELD)
+        email_field.send_keys("bugaev@example.com")
+
+    def fill_user_number(self, user_number):
+        user_number_field = self.driver.find_element(*self.USER_NUMBER_FIELD)
+        user_number_field.send_keys("1234567890")
+
     def select_gender(self, gender):
         gender_radio_button = self.driver.find_element(By.XPATH, f"//div[@id='genterWrapper']//input[@value='{gender}']")
         gender_radio_button.click()
 
-    def select_birth_day(self, year, month):
+    def select_birth_day(self, year, month, day):
         self.driver.find_element(*self.CALENDAR_INPUT).click()
         Select(self.driver.find_element(*self.YEAR_OF_BIRTH_SELECT)).select_by_value(year)
         Select(self.driver.find_element(*self.MONTH_OF_BIRTH_SELECT)).select_by_value(month)
-        self.driver.find_element(*self.DAY_OF_BIRTH_SELECT).click()
+        self.driver.find_element(By.CSS_SELECTOR, f".react-datepicker__day--0{day}[tabindex='0']").click()
 
     def upload_file(self):
         with open("test_file.jpg", "w") as file:
@@ -66,6 +82,10 @@ class PracticeForm:
         for subject in subjects:
             subjects_input.send_keys(subject)
             subjects_input.send_keys(Keys.ENTER)
+
+    def fill_current_address(self, current_address):
+        current_address_field = self.driver.find_element(*self.CURRENT_ADDRESS_FIELD)
+        current_address_field.send_keys(current_address)
 
     def select_state(self):
         self.driver.find_element(*self.STATE_INPUT).click()
@@ -100,26 +120,22 @@ class PracticeForm:
 
     def test_fill_entire_form(self):
 
-        practice_form_title = self.driver.find_element(*self.PRACTICE_FROM_TITLE)
+        practice_form_title = self.driver.find_element(*self.PRACTICE_FORM_TITLE)
         assert practice_form_title.text == "Practice Form", "Заголовок страницы не совпадает"
 
         self.close_commercial_banner()
 
-        firstname_field = self.driver.find_element(*self.FIRST_NAME_FIELD)
-        firstname_field.send_keys("Dmitry")
+        self.fill_first_name("Dmitry")
 
-        lastname_field = self.driver.find_element(*self.LAST_NAME_FIELD)
-        lastname_field.send_keys("Bugaev")
+        self.fill_last_name("Bugaev")
 
-        email_field = self.driver.find_element(*self.EMAIL_FIELD)
-        email_field.send_keys("bugaev@example.com")
+        self.fill_email("bugaev@example.com")
 
         self.select_gender("Male")
 
-        user_number_field = self.driver.find_element(*self.USER_NUMBER_FIELD)
-        user_number_field.send_keys("1234567890")
+        self.fill_user_number("1234567890")
 
-        self.select_birth_day("1988", "4")
+        self.select_birth_day("1988", "4", "22")
 
         self.fill_subject("Maths", "English")
 
@@ -131,8 +147,7 @@ class PracticeForm:
 
         self.upload_file()
 
-        current_address_field = self.driver.find_element(*self.CURRENT_ADDRESS_FIELD)
-        current_address_field.send_keys("г. Санкт-Петербург, ул. Невский проспект, д 101")
+        self.fill_current_address("г. Санкт-Петербург, ул. Невский проспект, д 101")
 
         self.select_state()
 
@@ -149,8 +164,12 @@ class PracticeForm:
             os.remove("test_file.jpg")
         self.driver.quit()
 
+
+
 practice_form = PracticeForm()
 
-practice_form.set_up()
-practice_form.test_fill_entire_form()
-practice_form.tear_down()
+try:
+    practice_form.setup()
+    practice_form.test_fill_entire_form()
+finally:
+    practice_form.tear_down()
