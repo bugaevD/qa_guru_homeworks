@@ -44,6 +44,22 @@ class PracticeForm:
         banner_button = self.wait.until(EC.element_to_be_clickable(self.BANNER_BUTTON))
         banner_button.click()
 
+    def fill_first_name(self, first_name):
+        firstname_field = self.driver.find_element(*self.FIRST_NAME_FIELD)
+        firstname_field.send_keys(first_name)
+
+    def fill_last_name(self, last_name):
+        lastname_field = self.driver.find_element(*self.LAST_NAME_FIELD)
+        lastname_field.send_keys(last_name)
+
+    def fill_email(self, email):
+        email_field = self.driver.find_element(*self.EMAIL_FIELD)
+        email_field.send_keys("bugaev@example.com")
+
+    def fill_user_number(self, user_number):
+        user_number_field = self.driver.find_element(*self.USER_NUMBER_FIELD)
+        user_number_field.send_keys("1234567890")
+
     def select_gender(self, gender):
         gender_radio_button = self.driver.find_element(By.XPATH, f"//div[@id='genterWrapper']//input[@value='{gender}']")
         gender_radio_button.click()
@@ -105,19 +121,15 @@ class PracticeForm:
 
         self.close_commercial_banner()
 
-        firstname_field = self.driver.find_element(*self.FIRST_NAME_FIELD)
-        firstname_field.send_keys("Dmitry")
+        self.fill_first_name("Dmitry")
 
-        lastname_field = self.driver.find_element(*self.LAST_NAME_FIELD)
-        lastname_field.send_keys("Bugaev")
+        self.fill_last_name("Bugaev")
 
-        email_field = self.driver.find_element(*self.EMAIL_FIELD)
-        email_field.send_keys("bugaev@example.com")
+        self.fill_email("bugaev@example.com")
 
         self.select_gender("Male")
 
-        user_number_field = self.driver.find_element(*self.USER_NUMBER_FIELD)
-        user_number_field.send_keys("1234567890")
+        self.fill_user_number("1234567890")
 
         self.select_birth_day("1988", "4")
 
