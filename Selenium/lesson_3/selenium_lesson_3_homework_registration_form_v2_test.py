@@ -85,6 +85,7 @@ class PracticeForm:
 
     def fill_current_address(self, current_address):
         current_address_field = self.driver.find_element(*self.CURRENT_ADDRESS_FIELD)
+        self.driver.execute_script("arguments[0].scrollIntoView();", current_address_field)
         current_address_field.send_keys(current_address)
 
     def select_state(self):
