@@ -14,7 +14,7 @@ class PracticeForm:
         self.wait = WebDriverWait(self.driver, 5)
         self.url = "https://qa-guru.github.io/one-page-form/automation-practice-form.html"
 
-    PRACTICE_FROM_TITLE = (By.XPATH, "//main//h1")
+    PRACTICE_FORM_TITLE = (By.XPATH, "//main//h1")
     FIRST_NAME_FIELD = (By.ID, "firstName")
     LAST_NAME_FIELD = (By.ID, "lastName")
     EMAIL_FIELD = (By.ID, "userEmail")
@@ -36,7 +36,7 @@ class PracticeForm:
     BANNER_BUTTON = (By.XPATH, "//div[@id='fixedban']//button[@aria-label='Close']")
     RESULT_FORM = (By.ID, "resultModal")
 
-    def set_up(self):
+    def setup(self):
         self.driver.maximize_window()
         self.driver.get(self.url)
 
@@ -100,7 +100,7 @@ class PracticeForm:
 
     def test_fill_entire_form(self):
 
-        practice_form_title = self.driver.find_element(*self.PRACTICE_FROM_TITLE)
+        practice_form_title = self.driver.find_element(*self.PRACTICE_FORM_TITLE)
         assert practice_form_title.text == "Practice Form", "Заголовок страницы не совпадает"
 
         self.close_commercial_banner()
@@ -151,6 +151,6 @@ class PracticeForm:
 
 practice_form = PracticeForm()
 
-practice_form.set_up()
+practice_form.setup()
 practice_form.test_fill_entire_form()
 practice_form.tear_down()
