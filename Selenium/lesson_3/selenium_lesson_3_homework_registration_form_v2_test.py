@@ -64,11 +64,11 @@ class PracticeForm:
         gender_radio_button = self.driver.find_element(By.XPATH, f"//div[@id='genterWrapper']//input[@value='{gender}']")
         gender_radio_button.click()
 
-    def select_birth_day(self, year, month):
+    def select_birth_day(self, year, month, day):
         self.driver.find_element(*self.CALENDAR_INPUT).click()
         Select(self.driver.find_element(*self.YEAR_OF_BIRTH_SELECT)).select_by_value(year)
         Select(self.driver.find_element(*self.MONTH_OF_BIRTH_SELECT)).select_by_value(month)
-        self.driver.find_element(*self.DAY_OF_BIRTH_SELECT).click()
+        self.driver.find_element(By.CSS_SELECTOR, f".react-datepicker__day--0{day}[tabindex='0']").click()
 
     def upload_file(self):
         with open("test_file.jpg", "w") as file:
@@ -131,7 +131,7 @@ class PracticeForm:
 
         self.fill_user_number("1234567890")
 
-        self.select_birth_day("1988", "4")
+        self.select_birth_day("1988", "4", "22")
 
         self.fill_subject("Maths", "English")
 
@@ -163,6 +163,8 @@ class PracticeForm:
 
 practice_form = PracticeForm()
 
-practice_form.setup()
-practice_form.test_fill_entire_form()
-practice_form.tear_down()
+try:
+    practice_form.setup()
+    practice_form.test_fill_entire_form()
+finally:
+    practice_form.tear_down()
