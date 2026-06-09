@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 
 
 class PracticeForm:
@@ -39,9 +39,10 @@ class PracticeForm:
     def setup(self):
         self.driver.set_window_size(1280, 720)
         self.driver.get(self.url)
+        self.test_file = self.create_test_file()
 
     def close_commercial_banner(self):
-        banner_button = self.wait.until(EC.element_to_be_clickable(self.BANNER_BUTTON))
+        banner_button = self.wait.until(ec.element_to_be_clickable(self.BANNER_BUTTON))
         banner_button.click()
 
     def fill_first_name(self, first_name):
@@ -70,11 +71,13 @@ class PracticeForm:
         Select(self.driver.find_element(*self.MONTH_OF_BIRTH_SELECT)).select_by_value(month)
         self.driver.find_element(By.CSS_SELECTOR, f".react-datepicker__day--0{day}[tabindex='0']").click()
 
-    def upload_file(self):
-        with open("test_file.jpg", "w") as file:
-            file.write("Test File")
-        file_path = os.path.abspath("test_file.jpg")
+    def create_test_file(self):
+        file_path = os.path.abspath('test_file.jpg')
+        with open(file_path, 'w') as file:
+            file.write("Test")
+        return file_path
 
+    def upload_file(self, file_path):
         self.driver.find_element(*self.UPLOAD_PICTURE_BUTTON).send_keys(file_path)
 
     def fill_subject(self, *subjects):
@@ -95,12 +98,12 @@ class PracticeForm:
 
     def select_state(self):
         self.driver.find_element(*self.STATE_INPUT).click()
-        state_dropdown = self.wait.until(EC.element_to_be_clickable(self.STATE_SELECT))
+        state_dropdown = self.wait.until(ec.element_to_be_clickable(self.STATE_SELECT))
         state_dropdown.click()
 
     def select_city(self):
         self.driver.find_element(*self.CITY_INPUT).click()
-        city_dropdown = self.wait.until(EC.element_to_be_clickable(self.CITY_SELECT))
+        city_dropdown = self.wait.until(ec.element_to_be_clickable(self.CITY_SELECT))
         city_dropdown.click()
 
     def click_submit_button(self):
@@ -109,7 +112,7 @@ class PracticeForm:
         self.driver.find_element(*self.SUBMIT_BUTTON).click()
 
     def final_result_assertion(self):
-        result_form = self.wait.until(EC.visibility_of_element_located(self.RESULT_FORM))
+        result_form = self.wait.until(ec.visibility_of_element_located(self.RESULT_FORM))
         assert result_form.is_displayed(), "Таблица с данным не отобразилась"
 
         result_text = result_form.text
@@ -152,7 +155,7 @@ class PracticeForm:
 
         self.select_hobbies("Sports", "Music")
 
-        self.upload_file()
+        self.upload_file(self.test_file)
 
         self.fill_current_address("г. Санкт-Петербург, ул. Невский проспект, д 101")
 
@@ -165,8 +168,8 @@ class PracticeForm:
         self.final_result_assertion()
 
     def tear_down(self):
-        if os.path.exists("test_file.jpg"):
-            os.remove("test_file.jpg")
+        if os.path.exists(self.test_file):
+            os.remove(self.test_file)
         self.driver.quit()
 
 
