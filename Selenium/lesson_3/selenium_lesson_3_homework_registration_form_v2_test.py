@@ -57,7 +57,8 @@ class PracticeForm:
         user_number_field.send_keys(user_number)
 
     def select_gender(self, gender):
-        gender_radio_button = self.driver.find_element(By.XPATH, f"//div[@id='genterWrapper']//input[@value='{gender}']")
+        gender_radio_button = self.driver.find_element(By.XPATH,
+                                                       f"//div[@id='genterWrapper']//input[@value='{gender}']")
         gender_radio_button.click()
 
     def select_birth_day(self, year, month, day):
@@ -84,7 +85,8 @@ class PracticeForm:
 
     def select_hobbies(self, *hobbies):
         for hobby in hobbies:
-            hobby_check_box = self.driver.find_element(By.XPATH, f"//div[@id='hobbiesWrapper']//input[@value='{hobby}']")
+            hobby_check_box = self.driver.find_element(By.XPATH,
+                                                       f"//div[@id='hobbiesWrapper']//input[@value='{hobby}']")
             hobby_check_box.click()
 
     def fill_current_address(self, current_address):
@@ -93,12 +95,14 @@ class PracticeForm:
 
     def select_state(self, state):
         self.driver.find_element(*self.STATE_INPUT).click()
-        state_dropdown = self.wait.until(ec.element_to_be_clickable((By.XPATH, f"//div[@class='state-city-option'][text()='{state}']")))
+        state_dropdown = self.wait.until(
+            ec.element_to_be_clickable((By.XPATH, f"//div[@class='state-city-option'][text()='{state}']")))
         state_dropdown.click()
 
     def select_city(self, city):
         self.driver.find_element(*self.CITY_INPUT).click()
-        city_dropdown = self.wait.until(ec.element_to_be_clickable((By.XPATH, f"//div[@class='state-city-option'][text()='{city}']")))
+        city_dropdown = self.wait.until(
+            ec.element_to_be_clickable((By.XPATH, f"//div[@class='state-city-option'][text()='{city}']")))
         city_dropdown.click()
 
     def click_submit_button(self):
