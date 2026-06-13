@@ -64,7 +64,7 @@ class TestSuite:
     def test_valid_data(self):
 
         full_name = "Bugaev Dmitry"
-        email = "bugaev@example.com"
+        email = "bugaev1@example.com"
         current_address = "Санкт-Петербург, Невский проспект, д.151"
         permanent_address = "Санкт-Петербург, Проспект Большевиков, д.32"
 
