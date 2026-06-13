@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
+
 class TestLoginForm:
     URL = "https://qa-guru.github.io/one-page-form/login.html"
 
@@ -43,7 +44,6 @@ class TestLoginForm:
         return self.driver.find_element(*self.ERROR_MESSAGE).text
 
     def test_valid_data_login(self):
-
         login = "user1"
         password = "password1"
 
@@ -57,7 +57,6 @@ class TestLoginForm:
         self.tear_down()
 
     def test_empty_fields(self):
-
         self.setup()
         self.login_button()
 
@@ -66,7 +65,6 @@ class TestLoginForm:
         self.tear_down()
 
     def test_invalid_login(self):
-
         login = "user2"
         password = "password1"
 
@@ -80,7 +78,6 @@ class TestLoginForm:
         self.tear_down()
 
     def test_invalid_password(self):
-
         login = "user1"
         password = "password2"
 

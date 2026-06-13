@@ -13,6 +13,11 @@ class TestSuite:
     PERMANENT_ADDRESS = (By.ID, "permanentAddress")
     SUBMIT_BUTTON = (By.ID, "submit")
     OUTPUT = (By.ID, "output")
+    FULL_NAME_OUTPUT = (By.ID, "name")
+    EMAIL_OUTPUT = (By.ID, "email")
+    CUR_ADDR_OUTPUT = ("xpath", "//div[@id='output']/p[@id='currentAddress']")
+    PER_ADDR_OUTPUT = ("xpath",
+                       "//div[@id='output']/p[@id='permanentAddress']")
 
     def setup(self):
         self.driver = webdriver.Chrome()
@@ -38,12 +43,15 @@ class TestSuite:
     def get_output_data(self):
         self.wait.until(ec.visibility_of_element_located((By.ID, "output")))
 
-        name = self.driver.find_element("id", "name").text.replace("Name:", "")
-        email = self.driver.find_element("id", "email").text.replace("Email:", "")
-        current_address = self.driver.find_element("xpath", "//div[@id='output']/p[@id='currentAddress']").text.replace("Current Address :", "")
-        permanent_address = self.driver.find_element("xpath", "//div[@id='output']/p[@id='permanentAddress']").text.replace("Permananet Address :", "")
+        name = self.driver.find_element(*self.FULL_NAME).text.replace("Name:", "")
+        email = self.driver.find_element(*self.EMAIL_OUTPUT).text.replace("Email:", "")
+        current_address = self.driver.find_element(*self.CUR_ADDR_OUTPUT).text.replace(
+            "Current Address :", "")
+        permanent_address = self.driver.find_element(*self.PER_ADDR_OUTPUT).text.replace(
+            "Permananet Address :", "")
 
-        return {"name": name, "email": email, "current_address": current_address, "permanent_address": permanent_address}
+        return {"name": name, "email": email, "current_address": current_address,
+                "permanent_address": permanent_address}
 
     def click_submit_button(self):
         self.driver.find_element(*self.SUBMIT_BUTTON).click()
@@ -56,7 +64,7 @@ class TestSuite:
     def test_valid_data(self):
 
         full_name = "Bugaev Dmitry"
-        email = "bugaev@example.com"
+        email = "bugaev1@example.com"
         current_address = "Санкт-Петербург, Невский проспект, д.151"
         permanent_address = "Санкт-Петербург, Проспект Большевиков, д.32"
 
@@ -95,7 +103,6 @@ class TestSuite:
         finally:
             self.tear_down()
 
-
     def test_invalid_email(self):
         try:
             full_name = "Bugaev Dmitry"
@@ -115,6 +122,7 @@ class TestSuite:
 
         finally:
             self.tear_down()
+
     #
     def test_long_email(self):
         try:
