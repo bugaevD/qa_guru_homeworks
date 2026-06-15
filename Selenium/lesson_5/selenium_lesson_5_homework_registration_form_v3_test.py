@@ -191,7 +191,7 @@ class PracticeForm:
         assert gender in result_text, "Пол не совпадает"
         assert user_number in result_text, "Номер телефона не найден"
 
-    def assert_empty_fields(self):
+    def assert_form_error(self):
         self.wait.until(ec.visibility_of_element_located(self.FORM_ERROR))
         error_message = self.get_form_error()
         assert error_message == "Please fill required fields and enter a valid 10-digit mobile number."
@@ -200,8 +200,3 @@ class PracticeForm:
         if os.path.exists(self.test_file):
             os.remove(self.test_file)
         self.driver.quit()
-
-    def assert_invalid_number(self):
-        self.wait.until(ec.visibility_of_element_located(self.FORM_ERROR))
-        error_message = self.get_form_error()
-        assert error_message == "Please fill required fields and enter a valid 10-digit mobile number."

@@ -27,7 +27,6 @@ class Calendar:
         """
         Заполнить поле с датой
         :param date: день(01-31), месяц(0-11), год(например 1996)
-        :return:
         """
         Select(self.driver.find_element(*self.SELECT_YEAR)).select_by_value(date[2])
         Select(self.driver.find_element(*self.SELECT_MONTH)).select_by_value(date[1])
