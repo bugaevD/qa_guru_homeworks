@@ -31,6 +31,7 @@ class PracticeForm:
     SUBMIT_BUTTON = (By.ID, "submit")
     BANNER_BUTTON = (By.XPATH, "//div[@id='fixedban']//button[@aria-label='Close']")
     RESULT_FORM = (By.ID, "resultModal")
+    FORM_ERROR = (By.ID, "formError")
 
     def setup(self):
         self.driver.set_window_size(1280, 720)
@@ -40,6 +41,11 @@ class PracticeForm:
     def close_commercial_banner(self):
         banner_button = self.wait.until(ec.element_to_be_clickable(self.BANNER_BUTTON))
         banner_button.click()
+
+    def get_form_error(self):
+        # form_error = self.driver.find_element(*self.FORM_ERROR)
+        # return form_error.text
+        return self.driver.find_element(*self.FORM_ERROR).text
 
     def fill_first_name(self, first_name):
         firstname_field = self.driver.find_element(*self.FIRST_NAME_FIELD)
@@ -109,19 +115,24 @@ class PracticeForm:
         self.driver.execute_script("arguments[0].scrollIntoView();", submit_button)
         submit_button.click()
 
-    def test_fill_entire_form(self, first_name=None, last_name=None, email=None, gender=None, user_number=None,
-                              birth_date=None, subjects=None, hobbies=None, current_address=None, state=None,
-                              city=None):
+    def fill_form(self, first_name=None, last_name=None, email=None, gender=None, user_number=None,
+                  birth_date=None, subjects=None, hobbies=None, current_address=None, state=None,
+                  city=None):
 
         practice_form_title = self.driver.find_element(*self.PRACTICE_FORM_TITLE)
         assert practice_form_title.text == "Practice Form", "Заголовок страницы не совпадает"
 
         self.close_commercial_banner()
-        self.fill_first_name(first_name)
-        self.fill_last_name(last_name)
-        self.fill_email(email)
-        self.select_gender(gender)
-        self.fill_user_number(user_number)
+        if first_name is not None:
+            self.fill_first_name(first_name)
+        if last_name is not None:
+            self.fill_last_name(last_name)
+        if email is not None:
+            self.fill_email(email)
+        if gender is not None:
+            self.select_gender(gender)
+        if user_number is not None:
+            self.fill_user_number(user_number)
         if birth_date is not None:
             self.select_birth_day(birth_date)
         if subjects is not None:
@@ -138,19 +149,19 @@ class PracticeForm:
         self.click_submit_button()
 
     def assert_positive_all_fields(self, first_name=None, last_name=None, email=None, gender=None, user_number=None,
-                                   birth_day=None, subjects=None, hobbies=None, current_address=None, state=None,
+                                   birth_date=None, subjects=None, hobbies=None, current_address=None, state=None,
                                    city=None, file_name=None, ):
         result_form = self.wait.until(ec.visibility_of_element_located(self.RESULT_FORM))
         assert result_form.is_displayed(), "Таблица с данным не отобразилась"
 
         subjects = ", ".join(subjects) if isinstance(subjects, tuple) else subjects
         hobbies = ", ".join(hobbies) if isinstance(hobbies, tuple) else hobbies
-        if isinstance(birth_day, tuple):
+        if isinstance(birth_date, tuple):
             months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-            month_name = months[int(birth_day[1])]
-            birth_day = f"{birth_day[0]} {month_name} {birth_day[2]}"
+            month_name = months[int(birth_date[1])]
+            birth_date = f"{birth_date[0]} {month_name} {birth_date[2]}"
         else:
-            birth_day = birth_day
+            birth_date = birth_date
 
 
         result_text = result_form.text
@@ -159,7 +170,7 @@ class PracticeForm:
             "Student Email": email,
             "Gender": gender,
             "Mobile": user_number,
-            "Date of Birth": birth_day,
+            "Date of Birth": birth_date,
             "Subjects": subjects,
             "Hobbies": hobbies,
             "Picture": file_name,
@@ -180,7 +191,17 @@ class PracticeForm:
         assert gender in result_text, "Пол не совпадает"
         assert user_number in result_text, "Номер телефона не найден"
 
+    def assert_empty_fields(self):
+        self.wait.until(ec.visibility_of_element_located(self.FORM_ERROR))
+        error_message = self.get_form_error()
+        assert error_message == "Please fill required fields and enter a valid 10-digit mobile number."
+
     def tear_down(self):
         if os.path.exists(self.test_file):
             os.remove(self.test_file)
         self.driver.quit()
+
+    def assert_invalid_number(self):
+        self.wait.until(ec.visibility_of_element_located(self.FORM_ERROR))
+        error_message = self.get_form_error()
+        assert error_message == "Please fill required fields and enter a valid 10-digit mobile number."
