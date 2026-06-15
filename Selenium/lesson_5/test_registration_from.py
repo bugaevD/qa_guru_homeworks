@@ -40,8 +40,8 @@ class TestRegistrationForm:
     def test_empty_fields(self):
         self.registration_form.close_commercial_banner()
         self.registration_form.click_submit_button()
-        self.registration_form.assert_empty_fields()
+        self.registration_form.assert_form_error()
 
     def test_invalid_number(self):
         self.registration_form.fill_form("Dmitry", "Bugaev", "bugaev@example.com", "Male", "0129")
-        self.registration_form.assert_invalid_number()
+        self.registration_form.assert_form_error()
