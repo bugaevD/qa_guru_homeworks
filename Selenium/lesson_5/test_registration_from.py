@@ -23,16 +23,25 @@ class TestRegistrationForm:
         self.registration_form.tear_down()
 
     def test_positive(self):
-        self.registration_form.test_fill_entire_form("Dmitry", "Bugaev", "bugaev@example.com", "Male", "0123456789",
-                                                     ("04", "April", "1996"), ("Maths", "English"),
-                                                     ("Sports", "Reading"),
+        self.registration_form.fill_form("Dmitry", "Bugaev", "bugaev@example.com", "Male", "0123456789",
+                                         ("04", "3", "1996"), ("Maths", "English"),
+                                         ("Sports", "Reading"),
                                                      "г. Санкт-Петербург, ул. Невский проспект, д 101", "NCR", "Noida")
         self.registration_form.assert_positive_all_fields("Dmitry", "Bugaev", "bugaev@example.com", "Male",
-                                                          "0123456789", ("04", "April", "1996"), ("Maths", "English"),
+                                                          "0123456789", ("04", "3", "1996"), ("Maths", "English"),
                                                           ("Sports", "Reading"),
                                                           "г. Санкт-Петербург, ул. Невский проспект, д 101", "NCR",
                                                           "Noida", "test_file.jpg")
 
     def test_only_required_fields(self):
-        self.registration_form.test_fill_entire_form("Dmitry", "Bugaev", "bugaev@example.com", "Male", "0123456789")
+        self.registration_form.fill_form("Dmitry", "Bugaev", "bugaev@example.com", "Male", "0123456789")
         self.registration_form.assert_required_fields("Dmitry", "Bugaev", "bugaev@example.com", "Male", "0123456789")
+
+    def test_empty_fields(self):
+        self.registration_form.close_commercial_banner()
+        self.registration_form.click_submit_button()
+        self.registration_form.assert_empty_fields()
+
+    def test_invalid_number(self):
+        self.registration_form.fill_form("Dmitry", "Bugaev", "bugaev@example.com", "Male", "0129")
+        self.registration_form.assert_invalid_number()
