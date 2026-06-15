@@ -145,7 +145,13 @@ class PracticeForm:
 
         subjects = ", ".join(subjects) if isinstance(subjects, tuple) else subjects
         hobbies = ", ".join(hobbies) if isinstance(hobbies, tuple) else hobbies
-        birth_day = f"{birth_day[0]} {birth_day[1]} {birth_day[2]}" if isinstance(birth_day, tuple) else birth_day
+        if isinstance(birth_day, tuple):
+            months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            month_name = months[int(birth_day[1])]
+            birth_day = f"{birth_day[0]} {month_name} {birth_day[2]}"
+        else:
+            birth_day = birth_day
+
 
         result_text = result_form.text
         expected_data = {
@@ -153,7 +159,7 @@ class PracticeForm:
             "Student Email": email,
             "Gender": gender,
             "Mobile": user_number,
-            "Date of Birth": birth_day[2],
+            "Date of Birth": birth_day,
             "Subjects": subjects,
             "Hobbies": hobbies,
             "Picture": file_name,
