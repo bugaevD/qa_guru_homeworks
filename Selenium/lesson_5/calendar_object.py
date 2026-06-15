@@ -26,9 +26,9 @@ class Calendar:
     def select_birth_day(self, date: Tuple[str, str, str]):
         """
         Заполнить поле с датой
-        :param date: день(01-31), месяц(название месяца по-английски(April)), год(например 1996)
+        :param date: день(01-31), месяц(0-11), год(например 1996)
         :return:
         """
         Select(self.driver.find_element(*self.SELECT_YEAR)).select_by_value(date[2])
-        Select(self.driver.find_element(*self.SELECT_MONTH)).select_by_visible_text(date[1])
+        Select(self.driver.find_element(*self.SELECT_MONTH)).select_by_value(date[1])
         self.driver.find_element(By.CSS_SELECTOR, f".react-datepicker__day--0{date[0]}[tabindex='0']").click()
