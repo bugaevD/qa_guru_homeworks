@@ -43,8 +43,6 @@ class PracticeForm:
         banner_button.click()
 
     def get_form_error(self):
-        # form_error = self.driver.find_element(*self.FORM_ERROR)
-        # return form_error.text
         return self.driver.find_element(*self.FORM_ERROR).text
 
     def fill_first_name(self, first_name):
@@ -162,7 +160,6 @@ class PracticeForm:
             birth_date = f"{birth_date[0]} {month_name} {birth_date[2]}"
         else:
             birth_date = birth_date
-
 
         result_text = result_form.text
         expected_data = {

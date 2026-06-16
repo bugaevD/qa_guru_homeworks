@@ -26,7 +26,7 @@ class TestRegistrationForm:
         self.registration_form.fill_form("Dmitry", "Bugaev", "bugaev@example.com", "Male", "0123456789",
                                          ("04", "3", "1996"), ("Maths", "English"),
                                          ("Sports", "Reading"),
-                                                     "г. Санкт-Петербург, ул. Невский проспект, д 101", "NCR", "Noida")
+                                         "г. Санкт-Петербург, ул. Невский проспект, д 101", "NCR", "Noida")
         self.registration_form.assert_positive_all_fields("Dmitry", "Bugaev", "bugaev@example.com", "Male",
                                                           "0123456789", ("04", "3", "1996"), ("Maths", "English"),
                                                           ("Sports", "Reading"),
