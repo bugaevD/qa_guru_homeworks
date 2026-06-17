@@ -60,13 +60,13 @@ class TextBoxForm(PageFactory):
         actual_data = self.get_output_data()
 
         if full_name is not None:
-            assert actual_data["full_name"] == full_name.strip()
+            assert actual_data["full_name"] == full_name.strip(), "Введенные данные не совпадают!"
         if email is not None:
-            assert actual_data["email"] == email.strip()
+            assert actual_data["email"] == email.strip(), "Введенные данные не совпадают!"
         if current_address is not None:
-            assert actual_data["current_address"] == current_address.strip()
+            assert actual_data["current_address"] == current_address.strip(), "Введенные данные не совпадают!"
         if permanent_address is not None:
-            assert actual_data["permanent_address"] == permanent_address.strip()
+            assert actual_data["permanent_address"] == permanent_address.strip(), "Введенные данные не совпадают!"
 
     def assert_invalid_email(self, email=None):
         email_error = self.get_validation_message()
@@ -81,5 +81,5 @@ class TextBoxForm(PageFactory):
 
     def assert_security_payload(self, security_payload):
         actual_data = self.get_output_data()
-        assert actual_data is not None, "Форма упала"
-        assert actual_data["full_name"] == security_payload.strip()
+        assert actual_data is not None, "Форма упала при вводе небезопасных значений!"
+        assert actual_data["full_name"] == security_payload.strip(), "Введенные данные не совпадают!"
