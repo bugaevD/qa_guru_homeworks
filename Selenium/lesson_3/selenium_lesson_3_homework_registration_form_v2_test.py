@@ -1,4 +1,6 @@
 import os
+from typing import Tuple
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
@@ -9,8 +11,8 @@ from selenium.webdriver.support import expected_conditions as ec
 
 class PracticeForm:
 
-    def __init__(self):
-        self.driver = webdriver.Chrome()
+    def __init__(self, driver):
+        self.driver = driver
         self.wait = WebDriverWait(self.driver, 5)
         self.url = "https://qa-guru.github.io/one-page-form/automation-practice-form.html"
 
@@ -61,11 +63,16 @@ class PracticeForm:
                                                        f"//div[@id='genterWrapper']//input[@value='{gender}']")
         gender_radio_button.click()
 
-    def select_birth_day(self, year, month, day):
+    def select_birth_day(self, date: Tuple[str, str, str]):
+        """
+        Заполнить поле с датой
+        :param date: день(01-31), месяц(название месяца по-английски(April)), год(например 1996)
+        :return:
+        """
         self.driver.find_element(*self.CALENDAR_INPUT).click()
-        Select(self.driver.find_element(*self.YEAR_OF_BIRTH_SELECT)).select_by_value(year)
-        Select(self.driver.find_element(*self.MONTH_OF_BIRTH_SELECT)).select_by_value(month)
-        self.driver.find_element(By.CSS_SELECTOR, f".react-datepicker__day--0{day}[tabindex='0']").click()
+        Select(self.driver.find_element(*self.YEAR_OF_BIRTH_SELECT)).select_by_value(date[2])
+        Select(self.driver.find_element(*self.MONTH_OF_BIRTH_SELECT)).select_by_visible_text(date[1])
+        self.driver.find_element(By.CSS_SELECTOR, f".react-datepicker__day--0{date[0]}[tabindex='0']").click()
 
     def create_test_file(self):
         file_path = os.path.abspath('test_file.jpg')
@@ -79,12 +86,12 @@ class PracticeForm:
     def fill_subject(self, *subjects):
         subjects_input = self.driver.find_element(*self.SUBJECT_FIELD)
         self.driver.execute_script("arguments[0].scrollIntoView();", subjects_input)
-        for subject in subjects:
+        for subject in subjects[0]:
             subjects_input.send_keys(subject)
             subjects_input.send_keys(Keys.ENTER)
 
     def select_hobbies(self, *hobbies):
-        for hobby in hobbies:
+        for hobby in hobbies[0]:
             hobby_check_box = self.driver.find_element(By.XPATH,
                                                        f"//div[@id='hobbiesWrapper']//input[@value='{hobby}']")
             hobby_check_box.click()
@@ -110,46 +117,74 @@ class PracticeForm:
         self.driver.execute_script("arguments[0].scrollIntoView();", submit_button)
         submit_button.click()
 
-    def final_result_assertion(self):
+    def final_result_assertion(self, first_name=None, last_name=None, email=None, gender=None, user_number=None, birth_day=None, subjects=None, hobbies=None, current_address=None, state=None, city=None, file_name=None,):
         result_form = self.wait.until(ec.visibility_of_element_located(self.RESULT_FORM))
         assert result_form.is_displayed(), "Таблица с данным не отобразилась"
 
+        subjects = ", ".join(subjects) if isinstance(subjects, tuple) else subjects
+        hobbies = ", ".join(hobbies) if isinstance(hobbies, tuple) else hobbies
+        birth_day = f"{birth_day[0]} {birth_day[1]} {birth_day[2]}" if isinstance(birth_day, tuple) else birth_day
+
         result_text = result_form.text
         expected_data = {
-            "Student Name": "Dmitry Bugaev",
-            "Student Email": "bugaev@example.com",
-            "Gender": "Male",
-            "Mobile": "1234567890",
-            "Date of Birth": "1988",
-            "Subjects": "Maths",
-            "Hobbies": "Sports, Music",
-            "Picture": "test_file.jpg",
-            "Address": "г. Санкт-Петербург, ул. Невский проспект, д 101",
-            "State and City": "NCR Noida"
+            "Student Name": f"{first_name} {last_name}",
+            "Student Email": email,
+            "Gender": gender,
+            "Mobile": user_number,
+            "Date of Birth": birth_day[2],
+            "Subjects": subjects,
+            "Hobbies": hobbies,
+            "Picture": file_name,
+            "Address": current_address,
+            "State and City": f"{state} {city}"
         }
 
         for key, value in expected_data.items():
             assert key in result_text and value in result_text, f"Значения {value} из строки {key} не совпадают!"
 
-    def test_fill_entire_form(self):
+        print(expected_data)
+
+    def test_fill_entire_form(self, first_name=None, last_name=None, email=None, gender=None, user_number=None, birth_date=None, subjects=None, hobbies=None, current_address=None, state=None, city=None):
+
         practice_form_title = self.driver.find_element(*self.PRACTICE_FORM_TITLE)
         assert practice_form_title.text == "Practice Form", "Заголовок страницы не совпадает"
 
         self.close_commercial_banner()
-        self.fill_first_name("Dmitry")
-        self.fill_last_name("Bugaev")
-        self.fill_email("bugaev@example.com")
-        self.select_gender("Male")
-        self.fill_user_number("1234567890")
-        self.select_birth_day("1988", "4", "22")
-        self.fill_subject("Maths", "English")
-        self.select_hobbies("Sports", "Music")
+        self.fill_first_name(first_name)
+        self.fill_last_name(last_name)
+        self.fill_email(email)
+        self.select_gender(gender)
+        self.fill_user_number(user_number)
+        self.select_birth_day(birth_date)
+        self.fill_subject(subjects)
+        self.select_hobbies(hobbies)
         self.upload_file(self.test_file)
-        self.fill_current_address("г. Санкт-Петербург, ул. Невский проспект, д 101")
-        self.select_state("NCR")
-        self.select_city("Noida")
+        self.fill_current_address(current_address)
+        self.select_state(state)
+        self.select_city(city)
         self.click_submit_button()
-        self.final_result_assertion()
+        self.final_result_assertion("Dmitry", "Bugaev", "bugaev@example.com", "Male", "0123456789", ("04", "April", "1996"), ("Maths", "English"), ("Sports", "Reading"), "г. Санкт-Петербург, ул. Невский проспект, д 101", "NCR", "Noida", "test_file.jpg")
+
+
+    # def test_fill_entire_form(self):
+    #     practice_form_title = self.driver.find_element(*self.PRACTICE_FORM_TITLE)
+    #     assert practice_form_title.text == "Practice Form", "Заголовок страницы не совпадает"
+    #
+    #     self.close_commercial_banner()
+    #     self.fill_first_name("Dmitry")
+    #     self.fill_last_name("Bugaev")
+    #     self.fill_email("bugaev@example.com")
+    #     self.select_gender("Male")
+    #     self.fill_user_number("1234567890")
+    #     self.select_birth_day("1988", "4", "22")
+    #     self.fill_subject("Maths", "English")
+    #     self.select_hobbies("Sports", "Music")
+    #     self.upload_file(self.test_file)
+    #     self.fill_current_address("г. Санкт-Петербург, ул. Невский проспект, д 101")
+    #     self.select_state("NCR")
+    #     self.select_city("Noida")
+    #     self.click_submit_button()
+    #     self.final_result_assertion()
 
     def tear_down(self):
         if os.path.exists(self.test_file):
@@ -157,10 +192,10 @@ class PracticeForm:
         self.driver.quit()
 
 
-practice_form = PracticeForm()
+practice_form = PracticeForm(webdriver.Chrome())
 
 try:
     practice_form.setup()
-    practice_form.test_fill_entire_form()
+    practice_form.test_fill_entire_form("Dmitry", "Bugaev", "bugaev@example.com", "Male", "0123456789", ("04", "April", "1996"), ("Maths", "English"), ("Sports", "Reading"), "г. Санкт-Петербург, ул. Невский проспект, д 101", "NCR", "Noida")
 finally:
     practice_form.tear_down()
