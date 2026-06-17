@@ -42,7 +42,7 @@ class TestTextBoxForm:
 
     @pytest.mark.parametrize("email", [
         "bugaevexample.com",
-        # "bugaev@examplecom",
+        # "bugaev@examplecom", Форма пропускает данный email
         "@example.com",
         "bugaev@@example.com",
         "bugaev@example..com",
