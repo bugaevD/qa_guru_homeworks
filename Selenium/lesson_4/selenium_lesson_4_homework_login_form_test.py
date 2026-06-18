@@ -1,4 +1,3 @@
-import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -15,16 +14,14 @@ class TestLoginForm:
     WELCOME_MESSAGE = (By.ID, "welcome-message")
     ERROR_MESSAGE = (By.ID, "error-message")
 
-    @pytest.fixture
     def setup(self):
         self.driver = webdriver.Chrome()
         self.driver.get(self.URL)
         self.driver.maximize_window()
         self.wait = WebDriverWait(self.driver, 5)
-        yield self.driver
+
+    def tear_down(self):
         self.driver.quit()
-    # def tear_down(self):
-    #     self.driver.quit()
 
     def field_login(self, login):
         self.driver.find_element(*self.LOGIN_FIELD).send_keys(login)
@@ -46,39 +43,49 @@ class TestLoginForm:
         self.wait.until(ec.visibility_of_element_located(self.ERROR_MESSAGE))
         return self.driver.find_element(*self.ERROR_MESSAGE).text
 
-    @pytest.mark.parametrize("login, password, expected", [
-        ("user1", "password1", "Welcome, user1!")
-    ])
+    def test_valid_data_login(self):
+        login = "user1"
+        password = "password1"
 
-    def test_valid_data_login(self, login, password, expected):
-        self.field_login(login)
-        self.field_password(password)
-        self.login_button()
-        assert self.welcome_message_text() == expected
-
-    # def test_empty_fields(self):
-    #     self.login_button()
-    #     assert self.error_message_text() == "Login and password are required (minimum 3 and 6 characters)"
-
-    @pytest.mark.parametrize("login, password, expected", [
-        ("user2", "password1", "Wrong login or password"),
-        ("user1", "password2", "Wrong login or password"),
-    ])
-
-    def test_invalid_login(self, login, password, expected):
+        self.setup()
         self.field_login(login)
         self.field_password(password)
         self.login_button()
 
-        assert self.error_message_text() == expected
+        assert self.welcome_message_text() == f"Welcome, {login}!"
 
-    # def test_invalid_password(self):
-    #     login = "user1"
-    #     password = "password2"
-    #
-    #     self.field_login(login)
-    #     self.field_password(password)
-    #     self.login_button()
-    #
-    #     assert self.error_message_text() == "Wrong login or password"
+        self.tear_down()
 
+    def test_empty_fields(self):
+        self.setup()
+        self.login_button()
+
+        assert self.error_message_text() == "Login and password are required (minimum 3 and 6 characters)"
+
+        self.tear_down()
+
+    def test_invalid_login(self):
+        login = "user2"
+        password = "password1"
+
+        self.setup()
+        self.field_login(login)
+        self.field_password(password)
+        self.login_button()
+
+        assert self.error_message_text() == "Wrong login or password"
+
+        self.tear_down()
+
+    def test_invalid_password(self):
+        login = "user1"
+        password = "password2"
+
+        self.setup()
+        self.field_login(login)
+        self.field_password(password)
+        self.login_button()
+
+        assert self.error_message_text() == "Wrong login or password"
+
+        self.tear_down()
