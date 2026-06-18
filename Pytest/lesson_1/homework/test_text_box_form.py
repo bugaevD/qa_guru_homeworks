@@ -40,19 +40,33 @@ class TestTextBoxForm:
         text_box_form.fill_full_form(full_name, email, current_address, permanent_address)
         text_box_form.assert_valid_result(full_name, email, current_address, permanent_address)
 
-    @pytest.mark.parametrize("email", [
-        "bugaevexample.com",
+    # @pytest.mark.parametrize("email", [
+    #     "bugaevexample.com",
+    #     # "bugaev@examplecom", Форма пропускает данный email
+    #     "@example.com",
+    #     "bugaev@@example.com",
+    #     "bugaev@example..com",
+    #     "bugaev@.com",
+    #     "bugaevexample"
+    # ])
+    # def test_invalid_email(self, text_box_form, email):
+    #     text_box_form.fill_full_form(email=email)
+    #     print(text_box_form.get_validation_message())
+    #     text_box_form.assert_invalid_email(email=email)
+
+    @pytest.mark.parametrize("email, error_message", [
+        ("bugaevexample.com", '"Адрес электронной почты должен содержать символ "@". В адресе "bugaevexample.com" отсутствует символ "@".'),
         # "bugaev@examplecom", Форма пропускает данный email
-        "@example.com",
-        "bugaev@@example.com",
-        "bugaev@example..com",
-        "bugaev@.com",
-        "bugaevexample"
+        ("@example.com", 'Введите часть адреса до символа "@". Адрес "@example.com" неполный.'),
+        ("bugaev@@example.com", 'Часть адреса после символа "@" не должна содержать символ "@".'),
+        ("bugaev@example..com", 'Недопустимое положение символа "." в адресе "example..com".'),
+        ("bugaev@.com", 'Недопустимое положение символа "." в адресе ".com".'),
+        ("bugaevexample", 'Адрес электронной почты должен содержать символ "@". В адресе "bugaevexample" отсутствует символ "@".')
     ])
-    def test_invalid_email(self, text_box_form, email):
+    def test_invalid_email(self, text_box_form, email, error_message):
         text_box_form.fill_full_form(email=email)
         print(text_box_form.get_validation_message())
-        text_box_form.assert_invalid_email(email=email)
+        text_box_form.assert_invalid_email(email=email, error_message=error_message)
 
     @pytest.mark.parametrize("full_name, email, current_address, permanent_address", [
         (f"{"Bugaev Dmitry" * 100}", "bugaev@example.com", "New-York, wall-street", "456 Oak St"),
