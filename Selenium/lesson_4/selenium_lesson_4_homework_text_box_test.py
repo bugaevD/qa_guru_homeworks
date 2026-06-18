@@ -43,7 +43,7 @@ class TestSuite:
     def get_output_data(self):
         self.wait.until(ec.visibility_of_element_located((By.ID, "output")))
 
-        name = self.driver.find_element(*self.FULL_NAME).text.replace("Name:", "")
+        name = self.driver.find_element(*self.FULL_NAME_OUTPUT).text.replace("Name:", "")
         email = self.driver.find_element(*self.EMAIL_OUTPUT).text.replace("Email:", "")
         current_address = self.driver.find_element(*self.CUR_ADDR_OUTPUT).text.replace(
             "Current Address :", "")
