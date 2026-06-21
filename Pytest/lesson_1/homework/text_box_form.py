@@ -1,3 +1,4 @@
+from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from seleniumpagefactory.Pagefactory import PageFactory
 from selenium.webdriver.support import expected_conditions as ec
@@ -68,7 +69,7 @@ class TextBoxForm(PageFactory):
         if permanent_address is not None:
             assert actual_data["permanent_address"] == permanent_address.strip(), "Введенные данные не совпадают!"
 
-    def assert_invalid_email(self, email=None):
+    def assert_invalid_email(self, email=None, error_message=None):
         email_error = self.get_validation_message()
         if email is not None:
             assert len(email_error.strip()) > 0, "Форма пропустила невалидный email!"
@@ -83,3 +84,10 @@ class TextBoxForm(PageFactory):
         actual_data = self.get_output_data()
         assert actual_data is not None, "Форма упала при вводе небезопасных значений!"
         assert actual_data["full_name"] == security_payload.strip(), "Введенные данные не совпадают!"
+#
+# text_form = TextBoxForm(webdriver.Chrome())
+# text_form.open_text_box_page()
+# text_form.fill_full_form(email="bugaevexample")
+# print(text_form.get_validation_message())
+
+
