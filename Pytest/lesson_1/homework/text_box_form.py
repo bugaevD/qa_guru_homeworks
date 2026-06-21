@@ -84,10 +84,3 @@ class TextBoxForm(PageFactory):
         actual_data = self.get_output_data()
         assert actual_data is not None, "Форма упала при вводе небезопасных значений!"
         assert actual_data["full_name"] == security_payload.strip(), "Введенные данные не совпадают!"
-#
-# text_form = TextBoxForm(webdriver.Chrome())
-# text_form.open_text_box_page()
-# text_form.fill_full_form(email="bugaevexample")
-# print(text_form.get_validation_message())
-
-
