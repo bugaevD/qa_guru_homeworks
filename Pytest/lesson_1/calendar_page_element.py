@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 
-class TableElement:
+class CalendarElement:
     def __init__(self, driver, locator):
         self.driver = driver
         self.locator = locator
@@ -35,7 +35,7 @@ if __name__ == "__main__":
         driver.get("https://the-internet.herokupp.com/tables")
 
         table1_locator = (By.ID, "table1")
-        table = TableElement(driver, table1_locator)
+        table = (driver, table1_locator)
 
         headers = table.get_headers()
         first_row = table.get_row_data(0)
