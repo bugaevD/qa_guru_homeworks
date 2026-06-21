@@ -1,4 +1,5 @@
 import os
+import time
 from typing import Tuple
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -46,27 +47,39 @@ class PracticeForm:
         return self.driver.find_element(*self.FORM_ERROR).text
 
     def fill_first_name(self, first_name):
+        if first_name is None:
+            return
         firstname_field = self.driver.find_element(*self.FIRST_NAME_FIELD)
         firstname_field.send_keys(first_name)
 
     def fill_last_name(self, last_name):
+        if last_name is None:
+            return
         lastname_field = self.driver.find_element(*self.LAST_NAME_FIELD)
         lastname_field.send_keys(last_name)
 
     def fill_email(self, email):
+        if email is None:
+            return
         email_field = self.driver.find_element(*self.EMAIL_FIELD)
         email_field.send_keys(email)
 
     def fill_user_number(self, user_number):
+        if user_number is None:
+            return
         user_number_field = self.driver.find_element(*self.USER_NUMBER_FIELD)
         user_number_field.send_keys(user_number)
 
     def select_gender(self, gender):
+        if gender is None:
+            return
         gender_radio_button = self.driver.find_element(By.XPATH,
-                                                       f"//div[@id='genterWrapper']//input[@value='{gender}']")
+                                                    f"//div[@id='genterWrapper']//input[@value='{gender}']")
         gender_radio_button.click()
 
     def select_birth_day(self, date: Tuple[str, str, str]):
+        if date is None:
+            return
         self.calendar.select_calendar()
         self.calendar.select_birth_day(date)
 
@@ -79,30 +92,40 @@ class PracticeForm:
     def upload_file(self, file_path):
         self.driver.find_element(*self.UPLOAD_PICTURE_BUTTON).send_keys(file_path)
 
-    def fill_subject(self, *subjects):
+    def fill_subject(self, subjects):
+        if subjects is None:
+            return
         subjects_input = self.driver.find_element(*self.SUBJECT_FIELD)
         self.driver.execute_script("arguments[0].scrollIntoView();", subjects_input)
-        for subject in subjects[0]:
+        for subject in subjects:
             subjects_input.send_keys(subject)
             subjects_input.send_keys(Keys.ENTER)
 
-    def select_hobbies(self, *hobbies):
-        for hobby in hobbies[0]:
-            hobby_check_box = self.driver.find_element(By.XPATH,
+    def select_hobbies(self, hobbies):
+        if hobbies is None:
+            return
+        for hobby in hobbies:
+             hobby_check_box = self.driver.find_element(By.XPATH,
                                                        f"//div[@id='hobbiesWrapper']//input[@value='{hobby}']")
-            hobby_check_box.click()
+             hobby_check_box.click()
 
     def fill_current_address(self, current_address):
+        if current_address is None:
+            return
         current_address_field = self.driver.find_element(*self.CURRENT_ADDRESS_FIELD)
         current_address_field.send_keys(current_address)
 
     def select_state(self, state):
+        if state is None:
+            return
         self.driver.find_element(*self.STATE_INPUT).click()
         state_dropdown = self.wait.until(
-            ec.element_to_be_clickable((By.XPATH, f"//div[@class='state-city-option'][text()='{state}']")))
+             ec.element_to_be_clickable((By.XPATH, f"//div[@class='state-city-option'][text()='{state}']")))
         state_dropdown.click()
 
     def select_city(self, city):
+        if city is None:
+            return
         self.driver.find_element(*self.CITY_INPUT).click()
         city_dropdown = self.wait.until(
             ec.element_to_be_clickable((By.XPATH, f"//div[@class='state-city-option'][text()='{city}']")))
@@ -121,29 +144,18 @@ class PracticeForm:
         assert practice_form_title.text == "Practice Form", "Заголовок страницы не совпадает"
 
         self.close_commercial_banner()
-        if first_name is not None:
-            self.fill_first_name(first_name)
-        if last_name is not None:
-            self.fill_last_name(last_name)
-        if email is not None:
-            self.fill_email(email)
-        if gender is not None:
-            self.select_gender(gender)
-        if user_number is not None:
-            self.fill_user_number(user_number)
-        if birth_date is not None:
-            self.select_birth_day(birth_date)
-        if subjects is not None:
-            self.fill_subject(subjects)
-        if hobbies is not None:
-            self.select_hobbies(hobbies)
+        self.fill_first_name(first_name)
+        self.fill_last_name(last_name)
+        self.fill_email(email)
+        self.select_gender(gender)
+        self.fill_user_number(user_number)
+        self.select_birth_day(birth_date)
+        self.fill_subject(subjects)
+        self.select_hobbies(hobbies)
         self.upload_file(self.test_file)
-        if current_address is not None:
-            self.fill_current_address(current_address)
-        if state is not None:
-            self.select_state(state)
-        if city is not None:
-            self.select_city(city)
+        self.fill_current_address(current_address)
+        self.select_state(state)
+        self.select_city(city)
         self.click_submit_button()
 
     def assert_positive_all_fields(self, first_name=None, last_name=None, email=None, gender=None, user_number=None,
