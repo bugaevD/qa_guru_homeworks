@@ -1,7 +1,7 @@
 import os
-
+from selenium.webdriver.support import expected_conditions as ec
 from selenium import webdriver
-from selenium_lesson_5_homework_registration_form_v3_test import PracticeForm
+from practice_form_page import PracticeForm
 
 
 class TestRegistrationForm:
@@ -27,6 +27,10 @@ class TestRegistrationForm:
                                          ("04", "3", "1996"), ("Maths", "English"),
                                          ("Sports", "Reading"),
                                          "г. Санкт-Петербург, ул. Невский проспект, д 101", "NCR", "Noida")
+        result_form = self.registration_form.wait.until(
+            ec.visibility_of_element_located(self.registration_form.RESULT_FORM)
+        )
+        print(result_form.text)
         self.registration_form.assert_positive_all_fields("Dmitry", "Bugaev", "bugaev@example.com", "Male",
                                                           "0123456789", ("04", "3", "1996"), ("Maths", "English"),
                                                           ("Sports", "Reading"),
