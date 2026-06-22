@@ -6,7 +6,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
 
-class Calendar:
+class CalendarObject:
     SELECT_YEAR = (By.CSS_SELECTOR, ".react-datepicker__year-select")
     SELECT_MONTH = (By.CSS_SELECTOR, ".react-datepicker__month-select")
 

@@ -1,11 +1,28 @@
 import os
-import time
 from typing import Tuple
+
+from attr import dataclass
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
-from calendar_object import Calendar
+from calendar_object import CalendarObject
+
+
+@dataclass
+class StudentForm:
+    first_name: str | None = None
+    last_name: str | None = None
+    email: str | None = None
+    gender: str | None = None
+    user_number: str | None = None
+    birth_date: Tuple[str, str, str] | None = None
+    subjects: Tuple[str, ...] | None = None
+    hobbies: Tuple[str, ...] | None = None
+    current_address: str | None = None
+    state: str | None = None
+    city: str | None = None
+    file_name: str = "test_file.jpg"
 
 
 class PracticeForm:
@@ -14,7 +31,7 @@ class PracticeForm:
         self.driver = driver
         self.wait = WebDriverWait(self.driver, 5)
         self.url = "https://qa-guru.github.io/one-page-form/automation-practice-form.html"
-        self.calendar = Calendar(driver, (By.ID, "dateOfBirthInput"))
+        self.calendar = CalendarObject(driver, (By.ID, "dateOfBirthInput"))
 
     PRACTICE_FORM_TITLE = (By.XPATH, "//main//h1")
     FIRST_NAME_FIELD = (By.ID, "firstName")
@@ -74,7 +91,7 @@ class PracticeForm:
         if gender is None:
             return
         gender_radio_button = self.driver.find_element(By.XPATH,
-                                                    f"//div[@id='genterWrapper']//input[@value='{gender}']")
+                                                       f"//div[@id='genterWrapper']//input[@value='{gender}']")
         gender_radio_button.click()
 
     def select_birth_day(self, date: Tuple[str, str, str]):
@@ -105,9 +122,9 @@ class PracticeForm:
         if hobbies is None:
             return
         for hobby in hobbies:
-             hobby_check_box = self.driver.find_element(By.XPATH,
+            hobby_check_box = self.driver.find_element(By.XPATH,
                                                        f"//div[@id='hobbiesWrapper']//input[@value='{hobby}']")
-             hobby_check_box.click()
+            hobby_check_box.click()
 
     def fill_current_address(self, current_address):
         if current_address is None:
@@ -120,7 +137,7 @@ class PracticeForm:
             return
         self.driver.find_element(*self.STATE_INPUT).click()
         state_dropdown = self.wait.until(
-             ec.element_to_be_clickable((By.XPATH, f"//div[@class='state-city-option'][text()='{state}']")))
+            ec.element_to_be_clickable((By.XPATH, f"//div[@class='state-city-option'][text()='{state}']")))
         state_dropdown.click()
 
     def select_city(self, city):
@@ -136,69 +153,65 @@ class PracticeForm:
         self.driver.execute_script("arguments[0].scrollIntoView();", submit_button)
         submit_button.click()
 
-    def fill_form(self, first_name=None, last_name=None, email=None, gender=None, user_number=None,
-                  birth_date=None, subjects=None, hobbies=None, current_address=None, state=None,
-                  city=None):
+    def fill_form(self, student: StudentForm):
 
         practice_form_title = self.driver.find_element(*self.PRACTICE_FORM_TITLE)
         assert practice_form_title.text == "Practice Form", "Заголовок страницы не совпадает"
 
         self.close_commercial_banner()
-        self.fill_first_name(first_name)
-        self.fill_last_name(last_name)
-        self.fill_email(email)
-        self.select_gender(gender)
-        self.fill_user_number(user_number)
-        self.select_birth_day(birth_date)
-        self.fill_subject(subjects)
-        self.select_hobbies(hobbies)
+        self.fill_first_name(student.first_name)
+        self.fill_last_name(student.last_name)
+        self.fill_email(student.email)
+        self.select_gender(student.gender)
+        self.fill_user_number(student.user_number)
+        self.select_birth_day(student.birth_date)
+        self.fill_subject(student.subjects)
+        self.select_hobbies(student.hobbies)
         self.upload_file(self.test_file)
-        self.fill_current_address(current_address)
-        self.select_state(state)
-        self.select_city(city)
+        self.fill_current_address(student.current_address)
+        self.select_state(student.state)
+        self.select_city(student.city)
         self.click_submit_button()
 
-    def assert_positive_all_fields(self, first_name=None, last_name=None, email=None, gender=None, user_number=None,
-                                   birth_date=None, subjects=None, hobbies=None, current_address=None, state=None,
-                                   city=None, file_name=None, ):
+    def assert_positive_all_fields(self, student: StudentForm):
         result_form = self.wait.until(ec.visibility_of_element_located(self.RESULT_FORM))
         assert result_form.is_displayed(), "Таблица с данным не отобразилась"
 
-        subjects = ", ".join(subjects) if isinstance(subjects, tuple) else subjects
-        hobbies = ", ".join(hobbies) if isinstance(hobbies, tuple) else hobbies
-        if isinstance(birth_date, tuple):
+        subjects = ", ".join(student.subjects) if isinstance(student.subjects, tuple) else student.subjects
+        hobbies = ", ".join(student.hobbies) if isinstance(student.hobbies, tuple) else student.hobbies
+        if isinstance(student.birth_date, tuple):
             months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-            month_name = months[int(birth_date[1])]
-            birth_date = f"{birth_date[0]} {month_name} {birth_date[2]}"
+            month_name = months[int(student.birth_date[1])]
+            birth_date = f"{student.birth_date[0]} {month_name} {student.birth_date[2]}"
         else:
-            birth_date = birth_date
+            birth_date = student.birth_date
 
         result_text = result_form.text
         expected_data = {
-            "Student Name": f"{first_name} {last_name}",
-            "Student Email": email,
-            "Gender": gender,
-            "Mobile": user_number,
+            "Student Name": f"{student.first_name} {student.last_name}",
+            "Student Email": student.email,
+            "Gender": student.gender,
+            "Mobile": student.user_number,
             "Date of Birth": birth_date,
             "Subjects": subjects,
             "Hobbies": hobbies,
-            "Picture": file_name,
-            "Address": current_address,
-            "State and City": f"{state} {city}"
+            "Picture": student.file_name,
+            "Address": student.current_address,
+            "State and City": f"{student.state} {student.city}"
         }
 
         for key, value in expected_data.items():
             assert key in result_text and value in result_text, f"Значения {value} из строки {key} не совпадают!"
 
-    def assert_required_fields(self, first_name, last_name, email, gender, user_number):
+    def assert_required_fields(self, student: StudentForm):
         result_form = self.wait.until(ec.visibility_of_element_located(self.RESULT_FORM))
         assert result_form.is_displayed(), "Таблица с данным не отобразилась"
 
         result_text = result_form.text
-        assert f"{first_name} {last_name}" in result_text, "Имя не найдено"
-        assert email in result_text, "Email не найден"
-        assert gender in result_text, "Пол не совпадает"
-        assert user_number in result_text, "Номер телефона не найден"
+        assert f"{student.first_name} {student.last_name}" in result_text, "Имя не найдено"
+        assert student.email in result_text, "Email не найден"
+        assert student.gender in result_text, "Пол не совпадает"
+        assert student.user_number in result_text, "Номер телефона не найден"
 
     def assert_form_error(self):
         self.wait.until(ec.visibility_of_element_located(self.FORM_ERROR))
