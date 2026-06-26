@@ -68,7 +68,7 @@ class TextBoxForm(PageFactory):
         if permanent_address is not None:
             assert actual_data["permanent_address"] == permanent_address.strip(), "Введенные данные не совпадают!"
 
-    def assert_invalid_email(self, email=None):
+    def assert_invalid_email(self, email=None, error_message=None):
         email_error = self.get_validation_message()
         if email is not None:
             assert len(email_error.strip()) > 0, "Форма пропустила невалидный email!"
