@@ -61,19 +61,3 @@ class LoginForm:
         assert success_panel.is_displayed(), "Окно с приветствием не отобразилось!"
 
         assert self.get_welcome_message() == f"Welcome, {login.username}!"
-
-    def assert_wrong_login(self):
-        self.wait.until(ec.visibility_of_element_located(self.ERROR_MESSAGE))
-        assert self.get_error_message() == "Wrong login or password"
-
-    def assert_empty_fields(self):
-        self.wait.until(ec.visibility_of_element_located(self.ERROR_MESSAGE))
-        assert self.get_error_message() == "Login and password are required (minimum 3 and 6 characters)"
-
-    def assert_empty_password(self):
-        self.wait.until(ec.visibility_of_element_located(self.ERROR_MESSAGE))
-        assert self.get_error_message() == "Password is required (minimum 6 characters)"
-
-    def assert_empty_login(self):
-        self.wait.until(ec.visibility_of_element_located(self.ERROR_MESSAGE))
-        assert self.get_error_message() == "Login is required (minimum 3 characters)"
