@@ -55,13 +55,15 @@ class TestTextBoxForm:
     #     text_box_form.assert_invalid_email(email=email)
 
     @pytest.mark.parametrize("email, error_message", [
-        ("bugaevexample.com", '"Адрес электронной почты должен содержать символ "@". В адресе "bugaevexample.com" отсутствует символ "@".'),
+        ("bugaevexample.com",
+         '"Адрес электронной почты должен содержать символ "@". В адресе "bugaevexample.com" отсутствует символ "@".'),
         # "bugaev@examplecom", Форма пропускает данный email
         ("@example.com", 'Введите часть адреса до символа "@". Адрес "@example.com" неполный.'),
         ("bugaev@@example.com", 'Часть адреса после символа "@" не должна содержать символ "@".'),
         ("bugaev@example..com", 'Недопустимое положение символа "." в адресе "example..com".'),
         ("bugaev@.com", 'Недопустимое положение символа "." в адресе ".com".'),
-        ("bugaevexample", 'Адрес электронной почты должен содержать символ "@". В адресе "bugaevexample" отсутствует символ "@".')
+        ("bugaevexample",
+         'Адрес электронной почты должен содержать символ "@". В адресе "bugaevexample" отсутствует символ "@".')
     ])
     def test_invalid_email(self, text_box_form, email, error_message):
         text_box_form.fill_full_form(email=email)
