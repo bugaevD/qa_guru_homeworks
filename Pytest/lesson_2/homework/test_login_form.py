@@ -49,36 +49,136 @@ class TestLoginForm:
         with allure.step("Проверяем вход в систему"):
             login_form_page.assert_positive_login(login_data)
 
+    # @allure.story("Негативный сценарий")
+    # @allure.title("Некорректный логин")
+    # @allure.severity(allure.severity_level.CRITICAL)
+    # @pytest.mark.smoke
+    # @pytest.mark.negative
+    # def test_invalid_login(self, login_form_page):
+    #     with allure.step("Подготавливаем тестовые данные с некорректным логином"):
+    #         login_data = LoginData(username="user2", password="password1")
+    #         allure.attach(
+    #             f"Логин: {login_data.username}, Пароль: {login_data.password}",
+    #             name="Тестовые данные",
+    #             attachment_type=allure.attachment_type.TEXT
+    #         )
+    #     with allure.step("Заполняем форму"):
+    #         login_form_page.fill_login_form(login_data)
+    #         allure.attach(
+    #             login_form_page.driver.get_screenshot_as_png(),
+    #             name="Скриншот ошибки",
+    #             attachment_type=allure.attachment_type.PNG)
+    #     with allure.step("Проверка сообщения об ошибке"):
+    #         login_form_page.assert_wrong_login()
+    #
+    # @allure.story("Негативный сценарий")
+    # @allure.title("Некорректный пароль")
+    # @allure.severity(allure.severity_level.CRITICAL)
+    # @pytest.mark.smoke
+    # @pytest.mark.negative
+    # def test_invalid_password(self, login_form_page):
+    #     with allure.step("Подготавливаем тестовые данные с некорректным паролем"):
+    #         login_data = LoginData(username="user1", password="password2")
+    #         allure.attach(
+    #             f"Логин: {login_data.username}, Пароль: {login_data.password}",
+    #             name="Тестовые данные",
+    #             attachment_type=allure.attachment_type.TEXT
+    #         )
+    #     with allure.step("Заполняем форму"):
+    #         login_form_page.fill_login_form(login_data)
+    #         allure.attach(
+    #             login_form_page.driver.get_screenshot_as_png(),
+    #             name="Скриншот ошибки",
+    #             attachment_type=allure.attachment_type.PNG
+    #         )
+    #     with allure.step("Проверка сообщения об ошибке"):
+    #         login_form_page.assert_wrong_login()
+    #
+    # @allure.story("Негативный сценарий")
+    # @allure.title("Пустые поля")
+    # @allure.severity(allure.severity_level.CRITICAL)
+    # @pytest.mark.smoke
+    # @pytest.mark.negative
+    # def test_empty_fields(self, login_form_page):
+    #     with allure.step("Подготавливаем пустые тестовые данные"):
+    #         login_data = LoginData()
+    #         allure.attach(
+    #             f"Логин: {login_data.username}, Пароль: {login_data.password}",
+    #             name="Тестовые данные",
+    #             attachment_type=allure.attachment_type.TEXT
+    #         )
+    #     with allure.step("Заполняем форму"):
+    #         login_form_page.fill_login_form(login_data)
+    #         allure.attach(
+    #             login_form_page.driver.get_screenshot_as_png(),
+    #             name="Скриншот ошибки",
+    #             attachment_type=allure.attachment_type.PNG
+    #         )
+    #     with allure.step("Проверка сообщения об ошибке"):
+    #         login_form_page.assert_empty_fields()
+    #
+    # @allure.story("Негативный сценарий")
+    # @allure.title("Пустое поле логина")
+    # @allure.severity(allure.severity_level.CRITICAL)
+    # @pytest.mark.smoke
+    # @pytest.mark.negative
+    # def test_empty_login(self, login_form_page):
+    #     with allure.step("Подготавливаем тестовые данные с пустым логином"):
+    #         login_data = LoginData(password="password1")
+    #         allure.attach(
+    #             f"Логин: {login_data.username}, Пароль: {login_data.password}",
+    #             name="Тестовые данные",
+    #             attachment_type=allure.attachment_type.TEXT
+    #         )
+    #     with allure.step("Заполняем форму"):
+    #         login_form_page.fill_login_form(login_data)
+    #         allure.attach(
+    #             login_form_page.driver.get_screenshot_as_png(),
+    #             name="Скриншот ошибки",
+    #             attachment_type=allure.attachment_type.PNG
+    #         )
+    #     with allure.step("Проверка сообщения об ошибке"):
+    #         login_form_page.assert_empty_login()
+    #
+    # @allure.story("Негативный сценарий")
+    # @allure.title("Пустое поле пароля")
+    # @allure.severity(allure.severity_level.CRITICAL)
+    # @pytest.mark.smoke
+    # @pytest.mark.negative
+    # def test_empty_password(self, login_form_page):
+    #     with allure.step("Подготавливаем тестовые данные с пустым паролем"):
+    #         login_data = LoginData(username="user1")
+    #         allure.attach(
+    #             f"Логин: {login_data.username}, Пароль: {login_data.password}",
+    #             name="Тестовые данные",
+    #             attachment_type=allure.attachment_type.TEXT
+    #         )
+    #     with allure.step("Заполняем форму"):
+    #         login_form_page.fill_login_form(login_data)
+    #         allure.attach(
+    #             login_form_page.driver.get_screenshot_as_png(),
+    #             name="Скриншот ошибки",
+    #             attachment_type=allure.attachment_type.PNG
+    #         )
+    #     with allure.step("Проверка сообщения об ошибке"):
+    #         login_form_page.assert_empty_password()
+
+    @pytest.mark.parametrize("username, password, expected_error, test_name", [
+        ("user2", "password1", "Wrong login or password", "Некорректный логин"),
+        ("user1", "password2", "Wrong login or password", "Некорретный пароль"),
+        ("", "", "Login and password are required (minimum 3 and 6 characters)", "Пустые поля"),
+        ("", "password1", "Login is required (minimum 3 characters)", "Пустое поле логина"),
+        ("user1", "", "Password is required (minimum 6 characters)", "Пустое поле пароля")
+    ])
     @allure.story("Негативный сценарий")
     @allure.title("Некорректный логин")
     @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.smoke
     @pytest.mark.negative
-    def test_invalid_login(self, login_form_page):
-        with allure.step("Подготавливаем тестовые данные с некорректным логином"):
-            login_data = LoginData(username="user2", password="password1")
-            allure.attach(
-                f"Логин: {login_data.username}, Пароль: {login_data.password}",
-                name="Тестовые данные",
-                attachment_type=allure.attachment_type.TEXT
-            )
-        with allure.step("Заполняем форму"):
-            login_form_page.fill_login_form(login_data)
-            allure.attach(
-                login_form_page.driver.get_screenshot_as_png(),
-                name="Скриншот ошибки",
-                attachment_type=allure.attachment_type.PNG)
-        with allure.step("Проверка сообщения об ошибке"):
-            login_form_page.assert_wrong_login()
-
-    @allure.story("Негативный сценарий")
-    @allure.title("Некорректный пароль")
-    @allure.severity(allure.severity_level.CRITICAL)
-    @pytest.mark.smoke
-    @pytest.mark.negative
-    def test_invalid_password(self, login_form_page):
-        with allure.step("Подготавливаем тестовые данные с некорректным паролем"):
-            login_data = LoginData(username="user1", password="password2")
+    def test_negative_data(self, login_form_page, username, password, expected_error, test_name):
+        with allure.step("Подготавливаем тестовые данные"):
+            allure.dynamic.title(f"Негативный сценарий: {test_name}")
+            login_data = LoginData(username=username, password=password)
             allure.attach(
                 f"Логин: {login_data.username}, Пароль: {login_data.password}",
                 name="Тестовые данные",
@@ -91,74 +191,7 @@ class TestLoginForm:
                 name="Скриншот ошибки",
                 attachment_type=allure.attachment_type.PNG
             )
-        with allure.step("Проверка сообщения об ошибке"):
-            login_form_page.assert_wrong_login()
+        with allure.step("Проверяем сообщение об ошибке"):
+            error_message = login_form_page.get_error_message()
 
-    @allure.story("Негативный сценарий")
-    @allure.title("Пустые поля")
-    @allure.severity(allure.severity_level.CRITICAL)
-    @pytest.mark.smoke
-    @pytest.mark.negative
-    def test_empty_fields(self, login_form_page):
-        with allure.step("Подготавливаем пустые тестовые данные"):
-            login_data = LoginData()
-            allure.attach(
-                f"Логин: {login_data.username}, Пароль: {login_data.password}",
-                name="Тестовые данные",
-                attachment_type=allure.attachment_type.TEXT
-            )
-        with allure.step("Заполняем форму"):
-            login_form_page.fill_login_form(login_data)
-            allure.attach(
-                login_form_page.driver.get_screenshot_as_png(),
-                name="Скриншот ошибки",
-                attachment_type=allure.attachment_type.PNG
-            )
-        with allure.step("Проверка сообщения об ошибке"):
-            login_form_page.assert_empty_fields()
-
-    @allure.story("Негативный сценарий")
-    @allure.title("Пустое поле логина")
-    @allure.severity(allure.severity_level.CRITICAL)
-    @pytest.mark.smoke
-    @pytest.mark.negative
-    def test_empty_login(self, login_form_page):
-        with allure.step("Подготавливаем тестовые данные с пустым логином"):
-            login_data = LoginData(password="password1")
-            allure.attach(
-                f"Логин: {login_data.username}, Пароль: {login_data.password}",
-                name="Тестовые данные",
-                attachment_type=allure.attachment_type.TEXT
-            )
-        with allure.step("Заполняем форму"):
-            login_form_page.fill_login_form(login_data)
-            allure.attach(
-                login_form_page.driver.get_screenshot_as_png(),
-                name="Скриншот ошибки",
-                attachment_type=allure.attachment_type.PNG
-            )
-        with allure.step("Проверка сообщения об ошибке"):
-            login_form_page.assert_empty_login()
-
-    @allure.story("Негативный сценарий")
-    @allure.title("Пустое поле пароля")
-    @allure.severity(allure.severity_level.CRITICAL)
-    @pytest.mark.smoke
-    @pytest.mark.negative
-    def test_empty_password(self, login_form_page):
-        with allure.step("Подготавливаем тестовые данные с пустым паролем"):
-            login_data = LoginData(username="user1")
-            allure.attach(
-                f"Логин: {login_data.username}, Пароль: {login_data.password}",
-                name="Тестовые данные",
-                attachment_type=allure.attachment_type.TEXT
-            )
-        with allure.step("Заполняем форму"):
-            login_form_page.fill_login_form(login_data)
-            allure.attach(
-                login_form_page.driver.get_screenshot_as_png(),
-                name="Скриншот ошибки",
-                attachment_type=allure.attachment_type.PNG
-            )
-        with allure.step("Проверка сообщения об ошибке"):
-            login_form_page.assert_empty_password()
+            assert error_message == expected_error, f"Ожидали ошибку: {expected_error}, получили: {error_message}"
