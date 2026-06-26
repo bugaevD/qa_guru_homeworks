@@ -104,6 +104,7 @@ class PracticeForm:
     def final_result(self):
         self.driver.find_element(*self.RESULT_FORM).click()
 
+
 practice_form = PracticeForm()
 
 practice_form.tear_up()
