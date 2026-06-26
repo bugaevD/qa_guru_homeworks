@@ -24,11 +24,6 @@ class TestLoginForm:
         with allure.step("Создаем объект формы логина, открываем форму логина"):
             login_form_page = LoginForm(driver)
             login_form_page.open_login_page()
-            allure.attach(
-                driver.get_screenshot_as_png(),
-                name="Скриншот страницы логина",
-                attachment_type=allure.attachment_type.PNG,
-            )
         return login_form_page
 
     @allure.story("Позитивный сценарий")
