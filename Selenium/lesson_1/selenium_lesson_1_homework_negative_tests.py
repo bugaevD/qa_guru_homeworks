@@ -1,10 +1,10 @@
 import time
 
-from _pytest import assertion
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 driver = webdriver.Chrome()
+
 
 def test_empty_fields():
     try:
@@ -25,6 +25,7 @@ def test_empty_fields():
             print("Тест пройден")
     finally:
         driver.quit()
+
 
 def test_invalid_email():
     try:
@@ -56,6 +57,7 @@ def test_invalid_email():
     finally:
         driver.quit()
 
+
 def test_long_email():
     try:
         driver.get("https://qa-guru.github.io/one-page-form/text-box.html")
@@ -66,7 +68,8 @@ def test_long_email():
         full_name_field.send_keys("Бугаев Дмитрий")
 
         email_field = driver.find_element(By.ID, "userEmail")
-        email_field.send_keys("bugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_d@example.com")
+        email_field.send_keys(
+            "bugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_dbugaev_d@example.com")
 
         current_address_field = driver.find_element(By.ID, "currentAddress")
         current_address_field.send_keys("Санкт-Петербург, Невский проспект, д.151")

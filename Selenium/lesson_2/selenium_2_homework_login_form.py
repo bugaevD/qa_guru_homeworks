@@ -1,17 +1,14 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import time
 
 
 class LoginForm:
-
     LOGIN_FIELD = (By.ID, "login-input")
     PASSWORD_FIELD = (By.ID, "password-input")
     LOGIN_BUTTON = (By.ID, "submit-button")
     LOGOUT_BUTTON = (By.ID, "logout-button")
     WELCOME_MESSAGE = (By.ID, "welcome-message")
     ERROR_MESSAGE = (By.ID, "error-message")
-
 
     def __init__(self, url, driver):
         self.__url = url
@@ -45,7 +42,6 @@ class LoginForm:
         assert welcome_message == "Welcome, user1!"
 
         self.get_driver().find_element(*self.LOGOUT_BUTTON).click()
-
 
     def test_empty_field(self):
         self.tear_up()
@@ -94,7 +90,6 @@ class LoginForm:
         error_message = self.get_driver().find_element(*self.ERROR_MESSAGE).text
 
         assert error_message == "Password must be at least 6 characters"
-
 
 
 login_form = LoginForm("https://qa-guru.github.io/one-page-form/login.html", webdriver.Chrome())

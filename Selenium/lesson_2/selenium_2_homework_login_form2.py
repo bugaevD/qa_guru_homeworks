@@ -3,7 +3,6 @@ from selenium.webdriver.common.by import By
 
 
 class LoginForm:
-
     LOGIN_FIELD = (By.ID, "login-input")
     PASSWORD_FIELD = (By.ID, "password-input")
     LOGIN_BUTTON = (By.ID, "submit-button")
@@ -41,6 +40,7 @@ class LoginForm:
     def error_message_text(self):
         return self.driver.find_element(*self.ERROR_MESSAGE).text
 
+
 def test_valid_data_login():
     login_form = LoginForm(url="https://qa-guru.github.io/one-page-form/login.html")
 
@@ -53,6 +53,7 @@ def test_valid_data_login():
 
     login_form.tear_down()
 
+
 def test_empty_fields():
     login_form = LoginForm(url="https://qa-guru.github.io/one-page-form/login.html")
 
@@ -62,6 +63,7 @@ def test_empty_fields():
     assert login_form.error_message_text() == "Login and password are required (minimum 3 and 6 characters)"
 
     login_form.tear_down()
+
 
 def test_invalid_login():
     login_form = LoginForm(url="https://qa-guru.github.io/one-page-form/login.html")
@@ -74,6 +76,7 @@ def test_invalid_login():
     assert login_form.error_message_text() == "Wrong login or password"
 
     login_form.tear_down()
+
 
 def test_invalid_password():
     login_form = LoginForm(url="https://qa-guru.github.io/one-page-form/login.html")

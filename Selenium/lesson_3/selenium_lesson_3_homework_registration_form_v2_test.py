@@ -117,7 +117,9 @@ class PracticeForm:
         self.driver.execute_script("arguments[0].scrollIntoView();", submit_button)
         submit_button.click()
 
-    def final_result_assertion(self, first_name=None, last_name=None, email=None, gender=None, user_number=None, birth_day=None, subjects=None, hobbies=None, current_address=None, state=None, city=None, file_name=None,):
+    def final_result_assertion(self, first_name=None, last_name=None, email=None, gender=None, user_number=None,
+                               birth_day=None, subjects=None, hobbies=None, current_address=None, state=None, city=None,
+                               file_name=None, ):
         result_form = self.wait.until(ec.visibility_of_element_located(self.RESULT_FORM))
         assert result_form.is_displayed(), "Таблица с данным не отобразилась"
 
@@ -144,7 +146,9 @@ class PracticeForm:
 
         print(expected_data)
 
-    def test_fill_entire_form(self, first_name=None, last_name=None, email=None, gender=None, user_number=None, birth_date=None, subjects=None, hobbies=None, current_address=None, state=None, city=None):
+    def test_fill_entire_form(self, first_name=None, last_name=None, email=None, gender=None, user_number=None,
+                              birth_date=None, subjects=None, hobbies=None, current_address=None, state=None,
+                              city=None):
 
         practice_form_title = self.driver.find_element(*self.PRACTICE_FORM_TITLE)
         assert practice_form_title.text == "Practice Form", "Заголовок страницы не совпадает"
@@ -163,8 +167,9 @@ class PracticeForm:
         self.select_state(state)
         self.select_city(city)
         self.click_submit_button()
-        self.final_result_assertion("Dmitry", "Bugaev", "bugaev@example.com", "Male", "0123456789", ("04", "April", "1996"), ("Maths", "English"), ("Sports", "Reading"), "г. Санкт-Петербург, ул. Невский проспект, д 101", "NCR", "Noida", "test_file.jpg")
-
+        self.final_result_assertion("Dmitry", "Bugaev", "bugaev@example.com", "Male", "0123456789",
+                                    ("04", "April", "1996"), ("Maths", "English"), ("Sports", "Reading"),
+                                    "г. Санкт-Петербург, ул. Невский проспект, д 101", "NCR", "Noida", "test_file.jpg")
 
     # def test_fill_entire_form(self):
     #     practice_form_title = self.driver.find_element(*self.PRACTICE_FORM_TITLE)
@@ -196,6 +201,8 @@ practice_form = PracticeForm(webdriver.Chrome())
 
 try:
     practice_form.setup()
-    practice_form.test_fill_entire_form("Dmitry", "Bugaev", "bugaev@example.com", "Male", "0123456789", ("04", "April", "1996"), ("Maths", "English"), ("Sports", "Reading"), "г. Санкт-Петербург, ул. Невский проспект, д 101", "NCR", "Noida")
+    practice_form.test_fill_entire_form("Dmitry", "Bugaev", "bugaev@example.com", "Male", "0123456789",
+                                        ("04", "April", "1996"), ("Maths", "English"), ("Sports", "Reading"),
+                                        "г. Санкт-Петербург, ул. Невский проспект, д 101", "NCR", "Noida")
 finally:
     practice_form.tear_down()

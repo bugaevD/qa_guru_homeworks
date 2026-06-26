@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 
 driver = webdriver.Chrome()
 
+
 def test_valid_data():
     try:
         driver.get("https://qa-guru.github.io/one-page-form/text-box.html")
@@ -37,4 +38,3 @@ def test_valid_data():
 
     finally:
         driver.quit()
-

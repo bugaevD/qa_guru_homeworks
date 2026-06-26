@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
 
+
 class TestSuite:
 
     def __init__(self, url, driver):
@@ -69,7 +70,6 @@ class TestSuite:
         finally:
             print("Очищаем driver между тестами для чистоты эксперимента.")
 
-
     def test_invalid_email(self):
         try:
             self.get_driver().get(self.get_url())
@@ -130,6 +130,7 @@ class TestSuite:
 
         finally:
             print("Очищаем driver между тестами для чистоты эксперимента.")
+
 
 text_box = TestSuite("https://qa-guru.github.io/one-page-form/text-box.html", webdriver.Chrome())
 text_box.test_valid_data()
