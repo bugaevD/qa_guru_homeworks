@@ -93,6 +93,7 @@ class TestLoginForm:
             )
         with allure.step("Проверка сообщения об ошибке"):
             login_form_page.assert_wrong_login()
+
     @allure.story("Негативный сценарий")
     @allure.title("Пустые поля")
     @allure.severity(allure.severity_level.CRITICAL)
@@ -109,10 +110,10 @@ class TestLoginForm:
         with allure.step("Заполняем форму"):
             login_form_page.fill_login_form(login_data)
             allure.attach(
-            login_form_page.driver.get_screenshot_as_png(),
-            name="Скриншот ошибки",
-            attachment_type=allure.attachment_type.PNG
-        )
+                login_form_page.driver.get_screenshot_as_png(),
+                name="Скриншот ошибки",
+                attachment_type=allure.attachment_type.PNG
+            )
         with allure.step("Проверка сообщения об ошибке"):
             login_form_page.assert_empty_fields()
 
