@@ -1,7 +1,8 @@
 from seleniumpagefactory.Pagefactory import PageFactory
 
+
 class TextBoxPage(PageFactory):
-    URL = "https://qa-guru.github.io/one-page-form/text-box.html" # Частный случай
+    URL = "https://qa-guru.github.io/one-page-form/text-box.html"  # Частный случай
 
     def __init__(self, driver):
         self.driver = driver
@@ -30,8 +31,8 @@ class TextBoxPage(PageFactory):
             self.current_address_input.send_keys(cur_addr)
         if perm_addr is not None:
             self.permanent_address.send_keys(perm_addr)
-        return self # NOTE: for Fluent Interface Implementation
-    
+        return self  # NOTE: for Fluent Interface Implementation
+
     # В Python выделять low level action-ы в отдельные методы не принято
     def fill_in_full_name(self, name):
         self.driver.find_element(*self.FULL_NAME).send_keys(name)
@@ -45,13 +46,13 @@ class TextBoxPage(PageFactory):
         # Возвращает текст из блока вывода, если он появился
         if not self.output_box.is_displayed():
             return None
-        
+
         # Парсинг строк (удаляем префиксы вроде 'Name:')
-        name        = self.output_name.text.replace("Name:", "").strip()
-        email       = self.output_email.text.replace("Email:", "").strip()
-        cur_addr    = self.output_current_address.text.replace("Current Address :", "").strip()
-        perm_addr   = self.output_permanent_address.text.replace("Permananet Address :", "").strip()
-        
+        name = self.output_name.text.replace("Name:", "").strip()
+        email = self.output_email.text.replace("Email:", "").strip()
+        cur_addr = self.output_current_address.text.replace("Current Address :", "").strip()
+        perm_addr = self.output_permanent_address.text.replace("Permananet Address :", "").strip()
+
         return {"name": name, "email": email, "cur_addr": cur_addr, "perm_addr": perm_addr}
 
     def is_email_error_present(self):
@@ -60,4 +61,3 @@ class TextBoxPage(PageFactory):
         # TypeError: argument of type 'NoneType' is not a container or iterable
         # TODO: как нужно обновить - исправить проверку?
         return "field-error" in field_class or "error" in field_class or False
-

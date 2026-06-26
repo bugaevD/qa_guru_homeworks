@@ -26,6 +26,7 @@ class CalendarElement:
         cells = rows[row_index].find_elements(By.TAG_NAME, "td")
         return cells[column_index].text
 
+
 if __name__ == "__main__":
     driver = webdriver.Chrome()
     driver.maximize_window()
@@ -39,7 +40,7 @@ if __name__ == "__main__":
 
         headers = table.get_headers()
         first_row = table.get_row_data(0)
-        specific_cell = table.get_cell_value(row_index=2, column_index=3) # Строка 3, Колонка 4
+        specific_cell = table.get_cell_value(row_index=2, column_index=3)  # Строка 3, Колонка 4
 
         print("Заголовки таблицы:", headers)
         print("Первая строка данных:", first_row)
