@@ -93,13 +93,13 @@ class TextBoxForm(PageFactory):
         actual_data = self.get_output_data()
 
         if user_data.name:
-            assert actual_data.name == user_data.name.strip(), f"Ожидали получить: {user_data.name}, получили: {actual_data.name}"
+            assert actual_data.name == user_data.name.strip(), f"Имя не совпадает! Вместо {user_data.name}, получили: {actual_data.name}"
         if user_data.email:
-            assert actual_data.email == user_data.email.strip(), f"Ожидали получить: {user_data.email}, получили: {actual_data.email}"
+            assert actual_data.email == user_data.email.strip(), f"Email не совпадает! Вместо {user_data.email}, получили: {actual_data.email}"
         if user_data.current_address:
-            assert actual_data.current_address == user_data.current_address.strip(), f"Ожидали получить: {user_data.current_address}, получили: {actual_data.current_address}"
+            assert actual_data.current_address == user_data.current_address.strip(), f"Текущий адрес не совпадает! Вместо: {user_data.current_address}, получили: {actual_data.current_address}"
         if user_data.permanent_address:
-            assert actual_data.permanent_address == user_data.permanent_address.strip(), f"Ожидали получить: {user_data.permanent_address}, получили: {actual_data.permanent_address}"
+            assert actual_data.permanent_address == user_data.permanent_address.strip(), f"Постоянный адрес не совпадает! Вместо: {user_data.permanent_address}, получили: {actual_data.permanent_address}"
 
     def assert_invalid_email(self, user_data: UserData, expected_error_message=None):
         email_error = self.get_validation_message()
